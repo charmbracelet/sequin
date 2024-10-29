@@ -37,6 +37,11 @@ func parse(in []byte) []string {
 	for _, s := range sequences {
 		switch seq := s.(type) {
 		case ansi.ControlCode:
+			r = append(r, "Control code")
+		case ansi.SosSequence:
+			r = append(r, "SOS: TODO")
+		case ansi.ApcSequence:
+			r = append(r, "APC: TODO")
 		case ansi.EscSequence:
 			switch seq.Command() {
 			case '7':
@@ -54,7 +59,7 @@ func parse(in []byte) []string {
 					params = seq.Params()[1]
 					uri = seq.Params()[2]
 				}
-				r = append(r, fmt.Sprintf("OSC 8 ; %s ; %s ; Uri ST: Set hyperlink '%[2]s' with params '%[1]s'", params, uri))
+				r = append(r, fmt.Sprintf("OSC 8 ; %s ; %s ST: Set hyperlink '%[2]s' with params '%[1]s'", params, uri))
 			case 10:
 				var color string
 				if len(seq.Params()) > 1 {
