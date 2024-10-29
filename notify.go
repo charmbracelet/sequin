@@ -8,7 +8,7 @@ import (
 )
 
 func handleNotify(p *ansi.Parser) {
-	parts := bytes.Split(p.Data, []byte{';'})
+	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 2 {
 		// Invalid, ignore
 		return

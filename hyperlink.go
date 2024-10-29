@@ -8,7 +8,7 @@ import (
 )
 
 func handleHyperlink(p *ansi.Parser) {
-	parts := bytes.Split(p.Data, []byte{';'})
+	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 3 {
 		// Invalid, ignore
 		return
