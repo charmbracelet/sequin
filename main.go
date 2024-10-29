@@ -342,16 +342,6 @@ func parse(in []byte) []string {
 	return r
 }
 
-func clipboardDesc(s string) string {
-	switch s {
-	case string(ansi.SystemClipboard):
-		return "System"
-	case string(ansi.PrimaryClipboard):
-		return "Primary"
-	}
-	return "Unknown"
-}
-
 func cursorDesc(i int) string {
 	switch i {
 	case 2:
@@ -400,4 +390,14 @@ func kittyModeDesc(mode int) string {
 	default:
 		return "Unknown mode"
 	}
+}
+
+func clipboardDesc(s string) string {
+	switch s {
+	case string(ansi.SystemClipboard):
+		return "System"
+	case string(ansi.PrimaryClipboard):
+		return "Primary"
+	}
+	return "Unknown"
 }
