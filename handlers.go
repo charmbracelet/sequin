@@ -13,11 +13,17 @@ var csiHandlers = map[int]func(*ansi.Parser){
 }
 
 var oscHandlers = map[int]func(*ansi.Parser){
-	0:  handleTitle,
-	1:  handleTitle,
-	2:  handleTitle,
-	8:  handleHyperlink,
-	9:  handleNotify,
-	22: handlePointerShape,
-	52: handleClipboard,
+	0:   handleTitle,
+	1:   handleTitle,
+	2:   handleTitle,
+	8:   handleHyperlink,
+	9:   handleNotify,
+	10:  handleTerminalColor,
+	11:  handleTerminalColor,
+	12:  handleTerminalColor,
+	22:  handlePointerShape,
+	52:  handleClipboard,
+	110: handleResetTerminalColor,
+	111: handleResetTerminalColor,
+	112: handleResetTerminalColor,
 }
