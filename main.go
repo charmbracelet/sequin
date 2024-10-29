@@ -406,7 +406,12 @@ func clipboardDesc(s string) string {
 
 func parseSGR(seq ansi.CsiSequence) []string {
 	var r []string
+	var done int
 	seq.Range(func(i, param int, hasMore bool) bool {
+		if done > 0 {
+			done--
+			return true
+		}
 		switch param {
 		case 0:
 			r = append(r, "CSI 0m: Reset all attributes")
@@ -447,34 +452,31 @@ func parseSGR(seq ansi.CsiSequence) []string {
 		case 30, 31, 32, 33, 34, 35, 36, 37:
 			r = append(r, fmt.Sprintf("CSI %dm: Set foreground color to %s", param, colorName(param-30)))
 		case 38:
-			if hasMore {
-				nextParam := seq.Param(i + 1)
-				if nextParam == 5 && i+2 < seq.Len() {
-					r = append(r, fmt.Sprintf("CSI 38;5;%dm: Set foreground color to 8-bit color %d", seq.Param(i+2), seq.Param(i+2)))
-					return false
-				} else if nextParam == 2 && i+4 < seq.Len() {
-					r = append(r, fmt.Sprintf("CSI 38;2;%d;%d;%dm: Set foreground color to RGB(%d,%d,%d)",
-						seq.Param(i+2), seq.Param(i+3), seq.Param(i+4),
-						seq.Param(i+2), seq.Param(i+3), seq.Param(i+4)))
-					return false
-				}
+			fmt.Println("AQUI")
+			nextParam := seq.Param(i + 1)
+			if nextParam == 5 && i+2 < seq.Len() {
+				r = append(r, fmt.Sprintf("CSI 38 ; 5 ; %d m: Set foreground color to 8-bit color %d", seq.Param(i+2), seq.Param(i+2)))
+				done += 2
+			} else if nextParam == 2 && i+4 < seq.Len() {
+				r = append(r, fmt.Sprintf("CSI 38 ; 2 ; %d ; %d ; %d m: Set foreground color to RGB(%d,%d,%d)",
+					seq.Param(i+2), seq.Param(i+3), seq.Param(i+4),
+					seq.Param(i+2), seq.Param(i+3), seq.Param(i+4)))
+				done += 4
 			}
 		case 39:
 			r = append(r, "CSI 39m: Reset foreground color")
 		case 40, 41, 42, 43, 44, 45, 46, 47:
-			r = append(r, fmt.Sprintf("CSI %dm: Set background color to %s", param, colorName(param-40)))
+			r = append(r, fmt.Sprintf("CSI %d m: Set background color to %s", param, colorName(param-40)))
 		case 48:
-			if hasMore {
-				nextParam := seq.Param(i + 1)
-				if nextParam == 5 && i+2 < seq.Len() {
-					r = append(r, fmt.Sprintf("CSI 48;5;%dm: Set background color to 8-bit color %d", seq.Param(i+2), seq.Param(i+2)))
-					return false
-				} else if nextParam == 2 && i+4 < seq.Len() {
-					r = append(r, fmt.Sprintf("CSI 48;2;%d;%d;%dm: Set background color to RGB(%d,%d,%d)",
-						seq.Param(i+2), seq.Param(i+3), seq.Param(i+4),
-						seq.Param(i+2), seq.Param(i+3), seq.Param(i+4)))
-					return false
-				}
+			nextParam := seq.Param(i + 1)
+			if nextParam == 5 && i+2 < seq.Len() {
+				r = append(r, fmt.Sprintf("CSI 48 ; 5 ; %d m: Set background color to 8-bit color %d", seq.Param(i+2), seq.Param(i+2)))
+				done += 2
+			} else if nextParam == 2 && i+4 < seq.Len() {
+				r = append(r, fmt.Sprintf("CSI 48 ; 2 ; %d ; %d ; %d m: Set background color to RGB(%d,%d,%d)",
+					seq.Param(i+2), seq.Param(i+3), seq.Param(i+4),
+					seq.Param(i+2), seq.Param(i+3), seq.Param(i+4)))
+				done += 4
 			}
 		case 49:
 			r = append(r, "CSI 49m: Reset background color")
