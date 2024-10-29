@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/x/ansi"
+	"github.com/charmbracelet/x/ansi/parser"
 )
 
 func main() {
@@ -113,10 +114,206 @@ func parseOsc(seq []byte, p *ansi.Parser) string {
 }
 
 func parseCsi(seq []byte, p *ansi.Parser) string {
-	switch p.Cmd {
-	default:
-		return ""
+	first := func() int {
+		if p.ParamsLen == 0 {
+			return 1
+		}
+		return p.Params[0]
 	}
+	switch p.Cmd {
+	case 'A':
+		return fmt.Sprintf("CSI %d A: Cursor up %[1]d lines", first())
+	case 'B':
+		return fmt.Sprintf("CSI %d A: Cursor down %[1]d lines", first())
+	case 'C':
+		return fmt.Sprintf("CSI %d A: Cursor right %[1]d columns", first())
+	case 'D':
+		return fmt.Sprintf("CSI %d A: Cursor left %[1]d columns", first())
+	case 'E':
+		return fmt.Sprintf("CSI %d A: Cursor next line %[1]d times", first())
+	case 'F':
+		return fmt.Sprintf("CSI %d A: Cursor previous line %[1]d times", first())
+	case 'H':
+		row := 1
+		col := 1
+		if p.ParamsLen > 1 {
+			row = p.Params[0]
+			col = p.Params[1]
+		}
+		return fmt.Sprintf("CSI %d;%d H: Set cursor position row=%[1]d col=%[2]d", row, col)
+	case 'J':
+		switch first() {
+		case 0:
+			return "CSI 0 J: Erase screen below"
+		case 1:
+			return "CSI 1 J: Erase screen above"
+		case 2:
+			return "CSI 2 J: Erase entire screen"
+		case 3:
+			return "CSI 3 J: Erase entire display"
+		}
+	case 'K':
+		switch first() {
+		case 0:
+			return "CSI 0 K: Erase line right"
+		case 1:
+			return "CSI 1 K: Erase line left"
+		case 2:
+			return "CSI 2 K: Erase entire line"
+		}
+	case 'L':
+		return fmt.Sprintf("CSI %d L: Insert %[1]d blank lines", first())
+	case 'M':
+		return fmt.Sprintf("CSI %d M: Delete %[1]d lines", first())
+	case 'S':
+		return fmt.Sprintf("CSI %d S: Scroll up %[1]d lines", first())
+	case 'T':
+		return fmt.Sprintf("CSI %d T: Scroll down %[1]d lines", first())
+	case 'c':
+		return "CSI c: Request primary device attributes"
+	case 'h' | '?'<<parser.MarkerShift:
+		switch first() {
+		case 1:
+			return "CSI ? 1 h: Enable cursor keys"
+		case 25:
+			return "CSI ? 25 h: Show cursor"
+		case 1000:
+			return "CSI ? 1000 h: Enable mouse"
+		case 1001:
+			return "CSI ? 1001 h: Enable mouse hilite"
+		case 1002:
+			return "CSI ? 1002 h: Enable mouse cell motion"
+		case 1003:
+			return "CSI ? 1003 h: Enable mouse all motion"
+		case 1004:
+			return "CSI ? 1004 h: Enable report focus"
+		case 1006:
+			return "CSI ? 1006 h: Enable mouse SGR ext"
+		case 1049:
+			return "CSI ? 1049 h: Enable altscreen mode"
+		case 2004:
+			return "CSI ? 2004 h: Enable bracketed paste mode"
+		case 2026:
+			return "CSI ? 2026 h: Enable synchronized output mode"
+		case 2027:
+			return "CSI ? 2027 h: Enable grapheme clustering mode"
+		case 9001:
+			return "CSI ? 9001 h: Enable win32 input mode"
+		}
+	case 'l' | '?'<<parser.MarkerShift:
+		switch first() {
+		case 1:
+			return "CSI ? 1 l: Disable cursor keys"
+		case 25:
+			return "CSI ? 25 l: Show cursor"
+		case 1000:
+			return "CSI ? 1000 l: Disable mouse"
+		case 1001:
+			return "CSI ? 1001 l: Disable mouse hilite"
+		case 1002:
+			return "CSI ? 1002 l: Disable mouse cell motion"
+		case 1003:
+			return "CSI ? 1003 l: Disable mouse all motion"
+		case 1004:
+			return "CSI ? 1004 l: Disable report focus"
+		case 1006:
+			return "CSI ? 1006 l: Disable mouse SGR ext"
+		case 1049:
+			return "CSI ? 1049 l: Disable altscreen mode"
+		case 2004:
+			return "CSI ? 2004 l: Disable bracketed paste mode"
+		case 2026:
+			return "CSI ? 2026 l: Disable synchronized output mode"
+		case 2027:
+			return "CSI ? 2027 l: Disable grapheme clustering mode"
+		case 9001:
+			return "CSI ? 9001 l: Disable win32 input mode"
+		}
+	case 'n' | '?'<<parser.MarkerShift:
+		return "CSI ? 6 n: Request extended cursor position"
+	case 'n':
+		return "CSI 6 n: Request cursor position"
+	case 'm':
+		// TODO: implement
+	case 'p' | '?'<<parser.MarkerShift | '$'<<parser.IntermedShift:
+		switch first() {
+		case 1:
+			return "CSI ? 1 $ p: Request cursor keys"
+		case 25:
+			return "CSI ? 25 $ p: Request cursor visibility"
+		case 1000:
+			return "CSI ? 1000 $ p: Request mouse"
+		case 1001:
+			return "CSI ? 1001 $ p: Request mouse hilite"
+		case 1002:
+			return "CSI ? 1002 $ p: Request mouse cell motion"
+		case 1003:
+			return "CSI ? 1003 $ p: Request mouse all motion"
+		case 1004:
+			return "CSI ? 1004 $ p: Request report focus"
+		case 1006:
+			return "CSI ? 1006 $ p: Request mouse SGR ext"
+		case 1049:
+			return "CSI ? 1049 $ p: Request altscreen mode"
+		case 2004:
+			return "CSI ? 2004 $ p: Request bracketed paste mode"
+		case 2026:
+			return "CSI ? 2026 $ p: Request synchronized output mode"
+		case 2027:
+			return "CSI ? 2027 $ p: Request grapheme clustering mode"
+		case 9001:
+			return "CSI ? 9001 $ p: Request win32 input mode"
+		}
+	case 'q':
+		cursor := first()
+		return fmt.Sprintf("CSI %d q: Set cursor style '%s'", cursor, cursorDesc(cursor))
+	case 'q' | '>'<<parser.MarkerShift:
+		if first() == 0 {
+			return "CSI > 0 q: Request XT version"
+		}
+	case 'r':
+		if p.ParamsLen > 1 {
+			top := p.Params[0]
+			bottom := p.Params[1]
+			return fmt.Sprintf(
+				"CSI %d ; %d r: Set scrolling region to top=%[1]d bottom=%[2]d",
+				top,
+				bottom,
+			)
+		}
+	case 's':
+		return "CSI s: Save cursor position"
+	case 'u' | '?'<<parser.MarkerShift:
+		return "CSI ? u: Request Kitty keyboard"
+	case 'u' | '='<<parser.MarkerShift:
+		if p.ParamsLen > 1 {
+			flag := p.Params[0]
+			mode := p.Params[1]
+			return fmt.Sprintf(
+				"CSI = u: Set Kitty keyboard flags=%q mode=%q",
+				kittyFlagsDesc(flag),
+				kittyModeDesc(mode),
+			)
+		}
+	case 'u' | '>'<<parser.MarkerShift:
+		flag := first()
+		if flag == 0 {
+			return "CSI > 0 u: Disable Kitty keyboard"
+		}
+		return fmt.Sprintf(
+			"CSI > %d u: Push Kitty keyboard flags=%q",
+			flag, kittyFlagsDesc(flag),
+		)
+	case 'u' | '<'<<parser.MarkerShift:
+		return fmt.Sprintf(
+			"CSI < %d u: Pop Kitty keyboard %[1]d times",
+			first(),
+		)
+
+	case 'u':
+		return "CSI u: Restore cursor position"
+	}
+	return ""
 }
 
 func parse(in []byte) []string {
@@ -139,244 +336,8 @@ func parse(in []byte) []string {
 			r = append(r, "APC: TODO")
 		case ansi.CsiSequence:
 			switch seq.Command() {
-			case 'A':
-				lines := 1
-				if seq.Len() > 0 {
-					lines = seq.Param(0)
-				}
-				r = append(r, fmt.Sprintf("CSI %d A: Cursor up %[1]d lines", lines))
-			case 'B':
-				lines := 1
-				if seq.Len() > 0 {
-					lines = seq.Param(0)
-				}
-				r = append(r, fmt.Sprintf("CSI %d B: Cursor down %[1]d lines", lines))
-			case 'C':
-				lines := 1
-				if seq.Len() > 0 {
-					lines = seq.Param(0)
-				}
-				r = append(r, fmt.Sprintf("CSI %d C: Cursor right %[1]d lines", lines))
-			case 'D':
-				lines := 1
-				if seq.Len() > 0 {
-					lines = seq.Param(0)
-				}
-				r = append(r, fmt.Sprintf("CSI %d D: Cursor left %[1]d lines", lines))
-			case 'E':
-				times := 1
-				if seq.Len() > 0 {
-					times = seq.Param(0)
-				}
-				r = append(r, fmt.Sprintf("CSI %d E: Cursor next line %[1]d times", times))
-			case 'F':
-				times := 1
-				if seq.Len() > 0 {
-					times = seq.Param(0)
-				}
-				r = append(r, fmt.Sprintf("CSI %d F: Cursor previous line %[1]d times", times))
-			case 'H':
-				row := 1
-				col := 1
-				if seq.Len() > 1 {
-					row = seq.Param(0)
-					col = seq.Param(1)
-				}
-				r = append(r, fmt.Sprintf("CSI %d;%d H: Set cursor position row=%[1]d col=%[2]d", row, col))
-			case 'J':
-				switch seq.Param(0) {
-				case 0:
-					r = append(r, "CSI 0 J: Erase screen below")
-				case 1:
-					r = append(r, "CSI 1 J: Erase screen above")
-				case 2:
-					r = append(r, "CSI 2 J: Erase entire screen")
-				case 3:
-					r = append(r, "CSI 3 J: Erase entire display")
-				}
-			case 'K':
-				switch seq.Param(0) {
-				case 0:
-					r = append(r, "CSI 0 K: Erase line right")
-				case 1:
-					r = append(r, "CSI 1 K: Erase line left")
-				case 2:
-					r = append(r, "CSI 2 K: Erase entire line")
-				}
-			case 'L':
-				r = append(r, fmt.Sprintf("CSI %d L: Insert %[1]d blank lines", seq.Param(0)))
-			case 'M':
-				r = append(r, fmt.Sprintf("CSI %d M: Delete %[1]d lines", seq.Param(0)))
-			case 'S':
-				r = append(r, fmt.Sprintf("CSI %d S: Scroll up %[1]d lines", seq.Param(0)))
-			case 'T':
-				r = append(r, fmt.Sprintf("CSI %d T: Scroll down %[1]d lines", seq.Param(0)))
-			case 'h':
-				switch seq.Marker() {
-				case '?':
-					switch seq.Param(0) {
-					case 1:
-						r = append(r, "CSI ? 1 h: Enable cursor keys")
-					case 25:
-						r = append(r, "CSI ? 25 h: Show cursor")
-					case 1000:
-						r = append(r, "CSI ? 1000 h: Enable mouse")
-					case 1001:
-						r = append(r, "CSI ? 1001 h: Enable mouse hilite")
-					case 1002:
-						r = append(r, "CSI ? 1002 h: Enable mouse cell motion")
-					case 1003:
-						r = append(r, "CSI ? 1003 $ h: Enable mouse all motion")
-					case 1004:
-						r = append(r, "CSI ? 1004 $ h: Enable report focus")
-					case 1006:
-						r = append(r, "CSI ? 1006 $ h: Enable mouse SGR ext")
-					case 1049:
-						r = append(r, "CSI ? 1049 $ h: Enable altscreen mode")
-					case 2004:
-						r = append(r, "CSI ? 2004 $ h: Enable bracketed paste mode")
-					case 2026:
-						r = append(r, "CSI ? 2026 $ h: Enable synchronized output mode")
-					case 2027:
-						r = append(r, "CSI ? 2027 $ h: Enable grapheme clustering mode")
-					case 9001:
-						r = append(r, "CSI ? 9001 $ h: Enable win32 input mode")
-					}
-				}
-			case 'c':
-				r = append(r, "CSI c: Request primary device attributes")
-			case 'l':
-				switch seq.Marker() {
-				case '?':
-					switch seq.Param(0) {
-					case 1:
-						r = append(r, "CSI ? 1 l: Disable cursor keys")
-					case 25:
-						r = append(r, "CSI ? 25 h: Hide cursor")
-					case 1000:
-						r = append(r, "CSI ? 1000 l: Disable mouse")
-					case 1001:
-						r = append(r, "CSI ? 1001 l: Disable mouse hilite")
-					case 1002:
-						r = append(r, "CSI ? 1002 l: Disable mouse cell motion")
-					case 1003:
-						r = append(r, "CSI ? 1003 $ l: Disable mouse all motion")
-					case 1004:
-						r = append(r, "CSI ? 1004 $ l: Disable report focus")
-					case 1006:
-						r = append(r, "CSI ? 1006 $ l: Disable mouse SGR ext")
-					case 1049:
-						r = append(r, "CSI ? 1049 $ l: Disable altscreen mode")
-					case 2004:
-						r = append(r, "CSI ? 2004 $ l: Disable bracketed paste mode")
-					case 2026:
-						r = append(r, "CSI ? 2026 $ l: Disable synchronized output mode")
-					case 2027:
-						r = append(r, "CSI ? 2027 $ l: Disable grapheme clustering mode")
-					case 9001:
-						r = append(r, "CSI ? 9001 $ l: Disable win32 input mode")
-					}
-				}
 			case 'm':
 				r = append(r, parseSGR(seq)...)
-			case 'n':
-				switch seq.Param(0) {
-				case 6:
-					if seq.Marker() > 0 {
-						r = append(r, "CSI ? 6 n: Request extended cursor position")
-					} else {
-						r = append(r, "CSI 6 n: Request cursor position")
-					}
-				default:
-					r = append(r, fmt.Sprintf("CSI %s: TODO", seq.Clone().String()))
-				}
-			case 'p':
-				switch seq.Marker() {
-				case '?':
-					if seq.Intermediate() == '$' {
-						switch seq.Param(0) {
-						case 1:
-							r = append(r, "CSI ? 1 $ p: Request cursor keys")
-						case 25:
-							r = append(r, "CSI ? 25 $ p: Request cursor visibility")
-						case 1000:
-							r = append(r, "CSI ? 1000 $ p: Request mouse")
-						case 1001:
-							r = append(r, "CSI ? 1001 $ p: Request mouse hilite")
-						case 1002:
-							r = append(r, "CSI ? 1002 $ p: Request mouse cell motion")
-						case 1003:
-							r = append(r, "CSI ? 1003 $ p: Request mouse all motion")
-						case 1004:
-							r = append(r, "CSI ? 1004 $ p: Request report focus")
-						case 1006:
-							r = append(r, "CSI ? 1006 $ p: Request mouse SGR ext")
-						case 1049:
-							r = append(r, "CSI ? 1049 $ p: Request altscreen mode")
-						case 2004:
-							r = append(r, "CSI ? 2004 $ p: Request bracketed paste mode")
-						case 2026:
-							r = append(r, "CSI ? 2026 $ p: Request synchronized output mode")
-						case 2027:
-							r = append(r, "CSI ? 2027 $ p: Request grapheme clustering mode")
-						case 9001:
-							r = append(r, "CSI ? 9001 $ p: Request win32 input mode")
-						}
-					}
-				}
-			case 'q':
-				if seq.Marker() == '>' && seq.Param(0) == 0 {
-					r = append(r, "CSI > 0 q: Request XT version")
-				} else {
-					cursor := 1
-					if seq.Len() > 0 {
-						cursor = seq.Param(0)
-					}
-					r = append(r, fmt.Sprintf("CSI %d q: Set cursor style '%s'", cursor, cursorDesc(cursor)))
-				}
-			case 'r':
-				r = append(r, fmt.Sprintf(
-					"CSI %d ; %d r: Set scrolling region to top=%[1]d bottom=%[2]d",
-					seq.Param(0),
-					seq.Param(1),
-				))
-			case 's':
-				r = append(r, "CSI s: Save cursor position")
-			case 'u':
-				switch seq.Marker() {
-				case 0:
-					r = append(r, "CSI u: Restore cursor position")
-				case '?':
-					r = append(r, "CSI ? u: Request Kitty keyboard")
-				case '=':
-					r = append(r, fmt.Sprintf(
-						"CSI = u: Set Kitty keyboard flags=%q mode=%q",
-						kittyFlagsDesc(seq.Param(0)),
-						kittyModeDesc(seq.Param(1)),
-					))
-				case '>':
-					if seq.Param(0) == 0 {
-						r = append(r, "CSI > 0 u: Disable Kitty keyboard")
-					} else {
-						r = append(r, fmt.Sprintf(
-							"CSI > %d u: Push Kitty keyboard flags=%q",
-							seq.Param(0),
-							kittyFlagsDesc(seq.Param(0)),
-						))
-					}
-				case '<':
-					r = append(r, fmt.Sprintf(
-						"CSI < %d u: Pop Kitty keyboard %[1]d times",
-						seq.Param(0),
-					))
-				default:
-					r = append(r, fmt.Sprintf(
-						"CSI %s: TODO",
-						seq.Clone().String(),
-					))
-				}
-			default:
-				r = append(r, fmt.Sprintf("CSI %s: TODO", seq.String()))
 			}
 		}
 	}
