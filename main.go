@@ -237,6 +237,8 @@ func parse(in []byte) []string {
 						r = append(r, "CSI ? 9001 $ l: Disable win32 input mode")
 					}
 				}
+			case 'm':
+				r = append(r, parseSGR(seq)...)
 			case 'n':
 				switch seq.Param(0) {
 				case 6:
@@ -400,4 +402,57 @@ func clipboardDesc(s string) string {
 		return "Primary"
 	}
 	return "Unknown"
+}
+
+func parseSGR(seq ansi.CsiSequence) []string {
+	var r []string
+	seq.Range(func(i, param int, hasMore bool) bool {
+		switch param {
+		case 0:
+			r = append(r, "CSI 0m: Reset all attributes")
+		case 1:
+			r = append(r, "CSI 1m: Set bold")
+		case 2:
+			r = append(r, "CSI 2m: Set faint")
+		case 3:
+			r = append(r, "CSI 3m: Set italic")
+		case 4:
+			r = append(r, "CSI 4m: Set underline")
+		case 5:
+			r = append(r, "CSI 5m: Set slow blink")
+		case 6:
+			r = append(r, "CSI 6m: Set rapid blink")
+		case 7:
+			r = append(r, "CSI 7m: Set reverse video")
+		case 8:
+			r = append(r, "CSI 8m: Set concealed")
+		case 9:
+			r = append(r, "CSI 9m: Set crossed-out")
+		case 21:
+			r = append(r, "CSI 21m: Set double underline")
+		case 22:
+			r = append(r, "CSI 22m: Reset bold and faint")
+		case 23:
+			r = append(r, "CSI 23m: Reset italic")
+		case 24:
+			r = append(r, "CSI 24m: Reset underline")
+		case 25:
+			r = append(r, "CSI 25m: Reset blink")
+		case 27:
+			r = append(r, "CSI 27m: Reset reverse video")
+		case 28:
+			r = append(r, "CSI 28m: Reset concealed")
+		case 29:
+			r = append(r, "CSI 29m: Reset crossed-out")
+		case 39:
+			r = append(r, "CSI 39m: Reset foreground color")
+		case 49:
+			r = append(r, "CSI 49m: Reset background color")
+		case 59:
+			r = append(r, "CSI 59m: Reset underline color")
+		}
+
+		return true
+	})
+	return r
 }
