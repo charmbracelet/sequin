@@ -158,14 +158,14 @@ func parse(in []byte) []string {
 				case 2:
 					r = append(r, "CSI 2 K: Erase entire line")
 				}
-			case 'S':
-				r = append(r, fmt.Sprintf("CSI %d S: Scroll up %[1]d lines", seq.Param(0)))
-			case 'T':
-				r = append(r, fmt.Sprintf("CSI %d T: Scroll down %[1]d lines", seq.Param(0)))
 			case 'L':
 				r = append(r, fmt.Sprintf("CSI %d L: Insert %[1]d blank lines", seq.Param(0)))
 			case 'M':
 				r = append(r, fmt.Sprintf("CSI %d M: Delete %[1]d lines", seq.Param(0)))
+			case 'S':
+				r = append(r, fmt.Sprintf("CSI %d S: Scroll up %[1]d lines", seq.Param(0)))
+			case 'T':
+				r = append(r, fmt.Sprintf("CSI %d T: Scroll down %[1]d lines", seq.Param(0)))
 			case 'h':
 				switch seq.Marker() {
 				case '?':
@@ -198,6 +198,8 @@ func parse(in []byte) []string {
 						r = append(r, "CSI ? 9001 $ h: Enable win32 input mode")
 					}
 				}
+			case 'c':
+				r = append(r, "CSI c: Request primary device attributes")
 			case 'l':
 				switch seq.Marker() {
 				case '?':
@@ -229,6 +231,17 @@ func parse(in []byte) []string {
 					case 9001:
 						r = append(r, "CSI ? 9001 $ l: Disable win32 input mode")
 					}
+				}
+			case 'n':
+				switch seq.Param(0) {
+				case 6:
+					if seq.Marker() > 0 {
+						r = append(r, "CSI ? 6 n: Request extended cursor position")
+					} else {
+						r = append(r, "CSI 6 n: Request cursor position")
+					}
+				default:
+					r = append(r, fmt.Sprintf("CSI %d n: TODO", seq.Param(0)))
 				}
 			case 'p':
 				switch seq.Marker() {
@@ -264,25 +277,22 @@ func parse(in []byte) []string {
 						}
 					}
 				}
+			case 'q':
+				if seq.Marker() == '>' && seq.Param(0) == 0 {
+					r = append(r, "CSI > 0 q: Request XT version")
+				} else {
+					cursor := 1
+					if seq.Len() > 0 {
+						cursor = seq.Param(0)
+					}
+					r = append(r, fmt.Sprintf("CSI %d q: Set cursor style '%s'", cursor, cursorDesc(cursor)))
+				}
 			case 'r':
 				r = append(r, fmt.Sprintf(
 					"CSI %d ; %d r: Set scrolling region to top=%[1]d bottom=%[2]d",
 					seq.Param(0),
 					seq.Param(1),
 				))
-			case 'c':
-				r = append(r, "CSI c: Request primary device attributes")
-			case 'n':
-				switch seq.Param(0) {
-				case 6:
-					if seq.Marker() > 0 {
-						r = append(r, "CSI ? 6 n: Request extended cursor position")
-					} else {
-						r = append(r, "CSI 6 n: Request cursor position")
-					}
-				default:
-					r = append(r, fmt.Sprintf("CSI %d n: TODO", seq.Param(0)))
-				}
 			case 's':
 				r = append(r, "CSI s: Save cursor position")
 			case 'u':
@@ -317,16 +327,6 @@ func parse(in []byte) []string {
 						"CSI %s: TODO",
 						seq.String(),
 					))
-				}
-			case 'q':
-				if seq.Marker() == '>' && seq.Param(0) == 0 {
-					r = append(r, "CSI > 0 q: Request XT version")
-				} else {
-					cursor := 1
-					if seq.Len() > 0 {
-						cursor = seq.Param(0)
-					}
-					r = append(r, fmt.Sprintf("CSI %d q: Set cursor style '%s'", cursor, cursorDesc(cursor)))
 				}
 			default:
 				r = append(r, fmt.Sprintf("CSI %s: TODO", seq.String()))
