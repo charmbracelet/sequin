@@ -46,7 +46,7 @@ func main() {
 		switch {
 		case ansi.HasCsiPrefix(seq):
 			flushPrint()
-			fmt.Printf("CSI: %q: ", seq)
+			fmt.Printf("CSI %q: ", seq)
 
 			handler, ok := csiHandlers[p.Cmd]
 			if ok {
@@ -60,7 +60,7 @@ func main() {
 
 		case ansi.HasOscPrefix(seq):
 			flushPrint()
-			fmt.Printf("OSC: %q: ", seq)
+			fmt.Printf("OSC %q: ", seq)
 			handler, ok := oscHandlers[p.Cmd]
 			if ok {
 				handler(p)
@@ -70,7 +70,7 @@ func main() {
 
 		case ansi.HasApcPrefix(seq):
 			flushPrint()
-			fmt.Printf("APC: %q", seq)
+			fmt.Printf("APC %q", seq)
 
 			switch {
 			case ansi.HasPrefix(p.Data, []byte("G")):
@@ -84,7 +84,7 @@ func main() {
 
 			if len(seq) == 1 {
 				// just an ESC
-				fmt.Println("Control code: ESC")
+				fmt.Println("Control code ESC")
 				break
 			}
 
@@ -102,11 +102,11 @@ func main() {
 			if width == 0 && len(seq) == 1 {
 				flushPrint()
 				// control code
-				fmt.Printf("Control code: %q\n", seq)
+				fmt.Printf("Control code %q\n", seq)
 				break
 			} else if width == 0 {
 				flushPrint()
-				fmt.Printf("Unknown: %q\n", seq)
+				fmt.Printf("Unknown %q\n", seq)
 				break
 			}
 
