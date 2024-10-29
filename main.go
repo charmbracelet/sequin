@@ -68,9 +68,11 @@ func main() {
 			case 9:
 				// notify
 			}
-		case ansi.HasSosPrefix(seq):
 		case ansi.HasApcPrefix(seq):
-		case ansi.HasPmPrefix(seq):
+			switch {
+			case ansi.HasPrefix(p.Data, []byte("G")):
+				// Kitty graphics
+			}
 		case ansi.HasEscPrefix(seq):
 			switch p.Cmd {
 			case 7:
@@ -78,6 +80,8 @@ func main() {
 			case 8:
 				// restore cursor
 			}
+		default:
+			fmt.Println("%q: unknown sequence", seq)
 		}
 
 		in = in[n:]
