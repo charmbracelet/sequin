@@ -444,15 +444,56 @@ func parseSGR(seq ansi.CsiSequence) []string {
 			r = append(r, "CSI 28m: Reset concealed")
 		case 29:
 			r = append(r, "CSI 29m: Reset crossed-out")
+		case 30, 31, 32, 33, 34, 35, 36, 37:
+			r = append(r, fmt.Sprintf("CSI %dm: Set foreground color to %s", param, colorName(param-30)))
+		case 38:
+			if hasMore {
+				nextParam := seq.Param(i + 1)
+				if nextParam == 5 && i+2 < seq.Len() {
+					r = append(r, fmt.Sprintf("CSI 38;5;%dm: Set foreground color to 8-bit color %d", seq.Param(i+2), seq.Param(i+2)))
+					return false
+				} else if nextParam == 2 && i+4 < seq.Len() {
+					r = append(r, fmt.Sprintf("CSI 38;2;%d;%d;%dm: Set foreground color to RGB(%d,%d,%d)",
+						seq.Param(i+2), seq.Param(i+3), seq.Param(i+4),
+						seq.Param(i+2), seq.Param(i+3), seq.Param(i+4)))
+					return false
+				}
+			}
 		case 39:
 			r = append(r, "CSI 39m: Reset foreground color")
+		case 40, 41, 42, 43, 44, 45, 46, 47:
+			r = append(r, fmt.Sprintf("CSI %dm: Set background color to %s", param, colorName(param-40)))
+		case 48:
+			if hasMore {
+				nextParam := seq.Param(i + 1)
+				if nextParam == 5 && i+2 < seq.Len() {
+					r = append(r, fmt.Sprintf("CSI 48;5;%dm: Set background color to 8-bit color %d", seq.Param(i+2), seq.Param(i+2)))
+					return false
+				} else if nextParam == 2 && i+4 < seq.Len() {
+					r = append(r, fmt.Sprintf("CSI 48;2;%d;%d;%dm: Set background color to RGB(%d,%d,%d)",
+						seq.Param(i+2), seq.Param(i+3), seq.Param(i+4),
+						seq.Param(i+2), seq.Param(i+3), seq.Param(i+4)))
+					return false
+				}
+			}
 		case 49:
 			r = append(r, "CSI 49m: Reset background color")
 		case 59:
 			r = append(r, "CSI 59m: Reset underline color")
+		case 90, 91, 92, 93, 94, 95, 96, 97:
+			r = append(r, fmt.Sprintf("CSI %dm: Set bright foreground color to %s", param, colorName(param-90)))
+		case 100, 101, 102, 103, 104, 105, 106, 107:
+			r = append(r, fmt.Sprintf("CSI %dm: Set bright background color to %s", param, colorName(param-100)))
 		}
-
 		return true
 	})
 	return r
+}
+
+func colorName(index int) string {
+	colors := []string{"Black", "Red", "Green", "Yellow", "Blue", "Magenta", "Cyan", "White"}
+	if index >= 0 && index < len(colors) {
+		return colors[index]
+	}
+	return "Unknown"
 }
