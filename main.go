@@ -30,13 +30,8 @@ func main() {
 
 	for len(in) > 0 {
 		seq, width, n, newState := ansi.DecodeSequence(in, state, p)
+
 		switch {
-		case len(seq) == 1:
-			if width == 1 {
-				// printables
-			} else {
-				// control codes
-			}
 		case ansi.HasCsiPrefix(seq):
 			switch p.Cmd {
 			case 'm':
@@ -74,6 +69,12 @@ func main() {
 				// Kitty graphics
 			}
 		case ansi.HasEscPrefix(seq):
+			if len(seq) == 1 {
+				// just an ESC
+				fmt.Println("Control code: ESC")
+				break
+			}
+
 			switch p.Cmd {
 			case 7:
 				// save cursor
@@ -81,7 +82,16 @@ func main() {
 				// restore cursor
 			}
 		default:
-			fmt.Println("%q: unknown sequence", seq)
+			if width == 0 && len(seq) == 1 {
+				// control code
+				fmt.Printf("Control code: %q\n", seq)
+				break
+			} else if width == 0 {
+				fmt.Printf("Unknown: %q\n", seq)
+				break
+			}
+
+			fmt.Printf("Print: %q\n", seq)
 		}
 
 		in = in[n:]
