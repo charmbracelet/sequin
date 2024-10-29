@@ -36,6 +36,7 @@ func main() {
 			switch p.Cmd {
 			case 'm':
 				// SGR
+				handleSgr(p)
 			case 'A':
 				// CUU
 			case 'B':
