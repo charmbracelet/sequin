@@ -9,6 +9,11 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+const (
+	markerShift   = 8
+	intermedShift = 16
+)
+
 func main() {
 	in := strings.Join(os.Args[1:], " ")
 	if in == "-" || in == "" {
@@ -19,8 +24,64 @@ func main() {
 		in = string(bts)
 	}
 
-	for _, desc := range parse([]byte(in)) {
-		fmt.Println(desc)
+	var state byte
+	p := ansi.GetParser()
+	defer ansi.PutParser(p)
+
+	for len(in) > 0 {
+		seq, width, n, newState := ansi.DecodeSequence(in, state, p)
+		switch {
+		case len(seq) == 1:
+			if width == 1 {
+				// printables
+			} else {
+				// control codes
+			}
+		case ansi.HasCsiPrefix(seq):
+			switch p.Cmd {
+			case 'm':
+				// SGR
+			case 'A':
+				// CUU
+			case 'B':
+				// CUD
+			case 'C':
+				// CUF
+			case 'D':
+				// CUB
+			case 'p' | '$'<<intermedShift:
+				// ANSI mode DECRQM
+			case 'p' | '?'<<markerShift | '$'<<intermedShift:
+				// Private DEC mode DECRQM
+			}
+		case ansi.HasDcsPrefix(seq):
+		case ansi.HasOscPrefix(seq):
+			switch p.Cmd {
+			case 0:
+				// set window and icon title
+			case 1:
+				// set icon title
+			case 2:
+				// set window title
+			case 8:
+				// hyperlinks
+			case 9:
+				// notify
+			}
+		case ansi.HasSosPrefix(seq):
+		case ansi.HasApcPrefix(seq):
+		case ansi.HasPmPrefix(seq):
+		case ansi.HasEscPrefix(seq):
+			switch p.Cmd {
+			case 7:
+				// save cursor
+			case 8:
+				// restore cursor
+			}
+		}
+
+		in = in[n:]
+		state = newState
 	}
 }
 
