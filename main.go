@@ -19,8 +19,103 @@ func main() {
 		in = string(bts)
 	}
 
-	for _, desc := range parse([]byte(in)) {
+	for _, desc := range parse2([]byte(in)) {
 		fmt.Println(desc)
+	}
+}
+
+func parse2(in []byte) []string {
+	p := ansi.GetParser()
+	defer ansi.PutParser(p)
+
+	var r []string
+	var state byte
+	for len(in) > 0 {
+		p.Reset()
+		seq, _, read, newState := ansi.DecodeSequence(in, state, p)
+		var got string
+		switch {
+		case ansi.HasCsiPrefix(seq):
+			got = parseCsi(seq, p)
+		case ansi.HasOscPrefix(seq):
+			got = parseOsc(seq, p)
+		case ansi.HasEscPrefix(seq):
+			got = parseEsc(seq, p)
+		}
+
+		if got == "" {
+			got = fmt.Sprintf("%q: TODO", string(seq))
+		}
+
+		r = append(r, got)
+		in = in[read:]
+		state = newState
+	}
+	return r
+}
+
+func parseEsc(seq []byte, p *ansi.Parser) string {
+	switch p.Cmd {
+	case '7':
+		return "ESC 7: Save cursor"
+	case '8':
+		return "ESC 8: Restore cursor"
+	default:
+		return ""
+	}
+}
+
+func parseOsc(seq []byte, p *ansi.Parser) string {
+	first := func() string {
+		parts := strings.Split(string(p.Data[:p.DataLen]), ";")
+		if len(parts) > 1 {
+			return string(parts[1])
+		}
+		return ""
+	}
+	all := func() []string {
+		parts := strings.Split(string(p.Data[:p.DataLen]), ";")
+		if len(parts) == 0 {
+			return nil
+		}
+		return parts[1:]
+	}
+
+	switch p.Cmd {
+	case 8:
+		var uri, params string
+		if par := all(); len(par) > 1 {
+			params = par[0]
+			uri = par[1]
+		}
+		return fmt.Sprintf("OSC 8 ; %s ; %s ST: Set hyperlink '%[2]s' with params '%[1]s'", params, uri)
+	case 10:
+		color := first()
+		return fmt.Sprintf("OSC 10 ; %s ST: Set foreground color '%[1]s'", color)
+	case 11:
+		color := first()
+		return fmt.Sprintf("OSC 11 ; %s ST: Set background color '%[1]s'", color)
+	case 12:
+		color := first()
+		return fmt.Sprintf("OSC 12 ; %s ST: Set cursor color '%[1]s'", color)
+	case 22:
+		shape := first()
+		return fmt.Sprintf("OSC 22 ; %s ST: Set mouse shape '%[1]s'", shape)
+	case 52:
+		clip := first()
+		if len(all()) > 2 {
+			return fmt.Sprintf("OSC 52 ; %s; <hidden> ; ST: Set %s clipboard", clip, clipboardDesc(clip))
+		}
+		return fmt.Sprintf("OSC 52 ; %s; ST: Request %s clipboard", clip, clipboardDesc(clip))
+	default:
+		return ""
+	}
+}
+
+func parseCsi(seq []byte, p *ansi.Parser) string {
+	switch p.Cmd {
+	default:
+		return ""
 	}
 }
 
@@ -42,61 +137,6 @@ func parse(in []byte) []string {
 			r = append(r, "SOS: TODO")
 		case ansi.ApcSequence:
 			r = append(r, "APC: TODO")
-		case ansi.EscSequence:
-			switch seq.Command() {
-			case '7':
-				r = append(r, "ESC 7: Save cursor")
-			case '8':
-				r = append(r, "ESC 8: Restore cursor")
-			default:
-				r = append(r, fmt.Sprintf("ESC %s: Restore cursor", seq.String()))
-			}
-		case ansi.OscSequence:
-			switch seq.Command() {
-			case 8:
-				var uri, params string
-				if len(seq.Params()) > 2 {
-					params = seq.Params()[1]
-					uri = seq.Params()[2]
-				}
-				r = append(r, fmt.Sprintf("OSC 8 ; %s ; %s ST: Set hyperlink '%[2]s' with params '%[1]s'", params, uri))
-			case 10:
-				var color string
-				if len(seq.Params()) > 1 {
-					color = seq.Params()[1]
-				}
-				r = append(r, fmt.Sprintf("OSC 10 ; %s ST: Set foreground color '%[1]s'", color))
-			case 11:
-				var color string
-				if len(seq.Params()) > 1 {
-					color = seq.Params()[1]
-				}
-				r = append(r, fmt.Sprintf("OSC 11 ; %s ST: Set background color '%[1]s'", color))
-			case 12:
-				var color string
-				if len(seq.Params()) > 1 {
-					color = seq.Params()[1]
-				}
-				r = append(r, fmt.Sprintf("OSC 12 ; %s ST: Set cursor color '%[1]s'", color))
-			case 22:
-				var shape string
-				if len(seq.Params()) > 1 {
-					shape = seq.Params()[1]
-				}
-				r = append(r, fmt.Sprintf("OSC 22 ; %s ST: Set mouse shape '%[1]s'", shape))
-			case 52:
-				var clip string
-				if len(seq.Params()) > 1 {
-					clip = seq.Params()[1]
-				}
-				if len(seq.Params()) > 3 {
-					r = append(r, fmt.Sprintf("OSC 52 ; %s; <hidden> ; ST: Set %s clipboard", clip, clipboardDesc(clip)))
-				} else {
-					r = append(r, fmt.Sprintf("OSC 52 ; %s; ST: Request %s clipboard", clip, clipboardDesc(clip)))
-				}
-			default:
-				r = append(r, fmt.Sprintf("OSC %s: TODO", seq.String()))
-			}
 		case ansi.CsiSequence:
 			switch seq.Command() {
 			case 'A':
@@ -248,7 +288,7 @@ func parse(in []byte) []string {
 						r = append(r, "CSI 6 n: Request cursor position")
 					}
 				default:
-					r = append(r, fmt.Sprintf("CSI %d n: TODO", seq.Param(0)))
+					r = append(r, fmt.Sprintf("CSI %s: TODO", seq.Clone().String()))
 				}
 			case 'p':
 				switch seq.Marker() {
@@ -332,7 +372,7 @@ func parse(in []byte) []string {
 				default:
 					r = append(r, fmt.Sprintf(
 						"CSI %s: TODO",
-						seq.String(),
+						seq.Clone().String(),
 					))
 				}
 			default:
@@ -452,7 +492,6 @@ func parseSGR(seq ansi.CsiSequence) []string {
 		case 30, 31, 32, 33, 34, 35, 36, 37:
 			r = append(r, fmt.Sprintf("CSI %dm: Set foreground color to %s", param, colorName(param-30)))
 		case 38:
-			fmt.Println("AQUI")
 			nextParam := seq.Param(i + 1)
 			if nextParam == 5 && i+2 < seq.Len() {
 				r = append(r, fmt.Sprintf("CSI 38 ; 5 ; %d m: Set foreground color to 8-bit color %d", seq.Param(i+2), seq.Param(i+2)))
