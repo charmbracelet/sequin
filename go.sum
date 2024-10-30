@@ -2,6 +2,8 @@ github.com/aymanbagabas/go-udiff v0.2.0 h1:TK0fH4MteXUDspT88n8CKzvK0X9O2xu9yQjWp
 github.com/aymanbagabas/go-udiff v0.2.0/go.mod h1:RE4Ex0qsGkTAJoQdQQCA0uG+nAzJO/pI/QwceO5fgrA=
 github.com/charmbracelet/x/ansi v0.4.3-0.20241030144921-dc6745b270fb h1:CzTja6KqlU/Y5m8dV2KCxvfBJAA92Ux3G2Y/aNzjy7M=
 github.com/charmbracelet/x/ansi v0.4.3-0.20241030144921-dc6745b270fb/go.mod h1:dk73KoMTT5AX5BsX0KrqhsTqAnhZZoCBjs7dGWp4Ktw=
+github.com/charmbracelet/x/ansi v0.4.3-0.20241030151339-a49550dd4e50 h1:nZbtnRamRbSiHWtDvTrx+iIPktq5MoO4YGGPL3ghvqg=
+github.com/charmbracelet/x/ansi v0.4.3-0.20241030151339-a49550dd4e50/go.mod h1:dk73KoMTT5AX5BsX0KrqhsTqAnhZZoCBjs7dGWp4Ktw=
 github.com/charmbracelet/x/exp/golden v0.0.0-20241029204245-3ef5e7b1ea37 h1:M35mkGiCDUvhWatGqs9L4RqBzJVi+F0W+QkpiePH0QI=
 github.com/charmbracelet/x/exp/golden v0.0.0-20241029204245-3ef5e7b1ea37/go.mod h1:wDlXFlCrmJ8J+swcL/MnGUuYnqgQdW9rhSD61oNMb6U=
 github.com/cpuguy83/go-md2man/v2 v2.0.4/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
