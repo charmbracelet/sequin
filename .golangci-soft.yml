@@ -18,6 +18,7 @@ linters:
     - goconst
     - godot
     - godox
+    - mnd
     - gomoddirectives
     - goprintffuncname
     - misspell
@@ -35,5 +36,4 @@ linters:
     - govet
     - ineffassign
     - staticcheck
-    - typecheck
     - unused
