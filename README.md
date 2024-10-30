@@ -52,6 +52,11 @@ Check [ansi][] out to learn more!
 [teatest]: https://github.com/charmbracelet/x/tree/main/exp/teatest
 [ansi]: https://github.com/charmbracelet/x/tree/main/ansi
 
+## Current state
+
+Common sequences are implemented, but there is still plenty of work to do!
+If you notice one of such missing sequences, feel free to open a PR. 😄
+
 ## Feedback
 
 We’d love to hear your thoughts on this project. Feel free to drop us a note!
