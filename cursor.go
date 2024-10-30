@@ -55,6 +55,28 @@ func handleCursor(p *ansi.Parser) (string, error) {
 		return "Save cursor position", nil
 	case 'u':
 		return "Restore cursor position", nil
+	case 'q':
+		return fmt.Sprintf("Set cursor style %s", descCursorStyle(count)), nil
+
 	}
 	return "", errUnhandled
+}
+
+func descCursorStyle(i int) string {
+	switch i {
+	case 1:
+		return "Blinking block"
+	case 2:
+		return "Steady block"
+	case 3:
+		return "Blinking underline"
+	case 4:
+		return "Steady underline"
+	case 5:
+		return "Blinking bar"
+	case 6:
+		return "Steady bar"
+	default:
+		return "Unknown"
+	}
 }

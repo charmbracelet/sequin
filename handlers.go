@@ -8,9 +8,8 @@ import (
 )
 
 var csiHandlers = map[int]handlerFn{
-	'm':                    handleSgr,
-	'c':                    printf("Request primary device attributes"),
-	'q' | '>'<<markerShift: handleXT,
+	'm': handleSgr,
+	'c': printf("Request primary device attributes"),
 
 	// kitty
 	'u' | '?'<<markerShift: handleKitty,
@@ -30,6 +29,7 @@ var csiHandlers = map[int]handlerFn{
 	'n':                    handleCursor,
 	's':                    handleCursor,
 	'u':                    handleCursor,
+	'q':                    handleCursor,
 
 	// screen
 	'J': handleScreen,
@@ -47,6 +47,8 @@ var csiHandlers = map[int]handlerFn{
 	'l' | '?'<<markerShift:                      handleMode,
 	'h':                                         handleMode,
 	'l':                                         handleMode,
+
+	'q' | '>'<<markerShift: handleXT,
 }
 
 var oscHandlers = map[int]handlerFn{

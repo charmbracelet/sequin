@@ -30,7 +30,14 @@ var cursor = map[string]string{
 	"origin":             ansi.CursorOrigin,
 	"save pos":           ansi.SaveCursorPosition,
 	"restore pos":        ansi.RestoreCursorPosition,
-	"style":              ansi.SetCursorStyle(4), // TODO: bug in ansi
+	"style 0":            ansi.SetCursorStyle(0),
+	"style 1":            ansi.SetCursorStyle(1),
+	"style 2":            ansi.SetCursorStyle(2),
+	"style 3":            ansi.SetCursorStyle(3),
+	"style 4":            ansi.SetCursorStyle(4),
+	"style 5":            ansi.SetCursorStyle(5),
+	"style 6":            ansi.SetCursorStyle(6),
+	"style 7":            ansi.SetCursorStyle(7),
 	"pointer shape":      ansi.SetPointerShape("crosshair"),
 }
 
