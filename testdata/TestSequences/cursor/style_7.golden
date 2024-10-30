@@ -1,1 +1,1 @@
-CSI "\x1b[7q": Set cursor style Unknown
+CSI "\x1b[7 q": Set cursor style Unknown

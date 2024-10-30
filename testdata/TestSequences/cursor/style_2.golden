@@ -1,1 +1,1 @@
-CSI "\x1b[2q": Set cursor style Steady block
+CSI "\x1b[2 q": Set cursor style Steady block

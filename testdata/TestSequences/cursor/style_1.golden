@@ -1,1 +1,1 @@
-CSI "\x1b[1q": Set cursor style Blinking block
+CSI "\x1b[1 q": Set cursor style Blinking block

@@ -1,1 +1,1 @@
-CSI "\x1b[6q": Set cursor style Steady bar
+CSI "\x1b[6 q": Set cursor style Steady bar
