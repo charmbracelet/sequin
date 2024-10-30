@@ -40,6 +40,31 @@ CSI "\x1b[?1003l": Disable private mode "mouse all motion"
 CSI "\x1b[?1006l": Disable private mode "mouse SGR ext"
 ```
 
+You can also use it to check the output of any program[^pipe], for instance, `ls` and `glow`:
+
+```console
+$ ls -1 --color=always | sequin
+CSI "\x1b[38;5;4m": Foreground color: 4
+CSI "\x1b[1m": Bold
+Text: "folder"
+CSI "\x1b[0m": Reset style
+Control code "\n": line feed
+Text: "file.txt"
+
+$ glow -s dark README.md | sequin
+Control code "\n": line feed
+CSI "\x1b[;;1m": , , Bold
+CSI "\x1b[0m": Reset style
+CSI "\x1b[;;1m": , , Bold
+CSI "\x1b[0m": Reset style
+Text: "  "
+CSI "\x1b[;;1m": , , Bold
+Text: " "
+CSI "\x1b[0m": Reset style
+CSI "\x1b[;;1m": , , Bold
+Text: "sequin"
+```
+
 So you may also use it to debug applications, and of course, to learn more!
 
 ## How it works
@@ -76,3 +101,10 @@ Part of [Charm](https://charm.sh).
 <a href="https://charm.sh/"><img alt="The Charm logo" src="https://stuff.charm.sh/charm-badge.jpg" width="400"></a>
 
 Charm热爱开源 • Charm loves open source
+
+[^pipe]:
+    Beware: some programs might render their output as plain text when it
+    detects that the output isn't a terminal (e.g. when redirecting to a file,
+    or to another program, like we are doing in the examples).
+    Usually there are ways around this, like setting `CLICOLOR_FORCE=1` or flags
+    to force colorful output. You might need to check what works in your case!
