@@ -135,13 +135,20 @@ var others = map[string]string{
 }
 
 var sgr = map[string]string{
-	"reset":   ansi.ResetStyle,
-	"style 1": new(ansi.Style).Bold().Faint().Italic().CurlyUnderline().String(),
-	"style 2": new(ansi.Style).SlowBlink().Reverse().Strikethrough().String(),
-	"style 3": new(ansi.Style).RapidBlink().BackgroundColor(ansi.Green).ForegroundColor(ansi.BrightGreen).UnderlineColor(ansi.Blue).String(),
-	"style 4": new(ansi.Style).BackgroundColor(ansi.BrightYellow).ForegroundColor(ansi.Black).UnderlineColor(ansi.BrightCyan).String(),
-	"style 5": new(ansi.Style).BackgroundColor(ansi.TrueColor(0xffeeaa)).ForegroundColor(ansi.TrueColor(0xffeeaa)).UnderlineColor(ansi.TrueColor(0xffeeaa)).String(),
-	"style 6": new(ansi.Style).BackgroundColor(ansi.ExtendedColor(255)).ForegroundColor(ansi.ExtendedColor(255)).UnderlineColor(ansi.ExtendedColor(255)).String(),
+	"reset":    ansi.ResetStyle + strings.Replace(ansi.ResetStyle, "m", "0m", 1),
+	"style 1":  new(ansi.Style).Bold().Faint().Italic().CurlyUnderline().String(),
+	"style 2":  new(ansi.Style).SlowBlink().Reverse().Strikethrough().String(),
+	"style 3":  new(ansi.Style).RapidBlink().BackgroundColor(ansi.Green).ForegroundColor(ansi.BrightGreen).UnderlineColor(ansi.Blue).String(),
+	"style 4":  new(ansi.Style).BackgroundColor(ansi.BrightYellow).ForegroundColor(ansi.Black).UnderlineColor(ansi.BrightCyan).String(),
+	"style 5":  new(ansi.Style).BackgroundColor(ansi.TrueColor(0xffeeaa)).ForegroundColor(ansi.TrueColor(0xffeeaa)).UnderlineColor(ansi.TrueColor(0xffeeaa)).String(),
+	"style 6":  new(ansi.Style).BackgroundColor(ansi.ExtendedColor(255)).ForegroundColor(ansi.ExtendedColor(255)).UnderlineColor(ansi.ExtendedColor(255)).String(),
+	"style 7":  new(ansi.Style).NoUnderline().NoBold().NoItalic().NormalIntensity().NoBlink().NoConceal().NoReverse().NoStrikethrough().String(),
+	"style 8":  new(ansi.Style).UnderlineStyle(ansi.NoUnderlineStyle).DefaultBackgroundColor().String(),
+	"style 9":  strings.Replace(new(ansi.Style).UnderlineStyle(ansi.SingleUnderlineStyle).DefaultForegroundColor().String(), "[4", "[4:1", 1),
+	"style 10": new(ansi.Style).UnderlineStyle(ansi.DoubleUnderlineStyle).String(),
+	"style 11": new(ansi.Style).UnderlineStyle(ansi.CurlyUnderlineStyle).String(),
+	"style 12": new(ansi.Style).UnderlineStyle(ansi.DottedUnderlineStyle).String(),
+	"style 13": new(ansi.Style).UnderlineStyle(ansi.DashedUnderlineStyle).Conceal().String(),
 }
 
 var title = map[string]string{

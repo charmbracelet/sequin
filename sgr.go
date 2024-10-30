@@ -33,8 +33,6 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 			if param.HasMore() {
 				// Handle underline styles
 				switch next := ansi.Param(parser.Params[i+1]); next.Param() {
-				case 0:
-					str += " (Disable)"
 				case 1:
 					str += " (Single)"
 				case 2:
@@ -89,8 +87,6 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 			str += fmt.Sprintf("Bright foreground color: %s", basicColors[int(param)-90])
 		case 100, 101, 102, 103, 104, 105, 106, 107:
 			str += fmt.Sprintf("Bright background color: %s", basicColors[int(param)-100])
-		default:
-			str += fmt.Sprintf("TODO: %d", param.Param())
 		}
 	}
 

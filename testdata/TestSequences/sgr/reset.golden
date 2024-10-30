@@ -1,1 +1,2 @@
 CSI "\x1b[m": Reset style
+CSI "\x1b[0m": Reset style
