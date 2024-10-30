@@ -145,7 +145,7 @@ var hyperlink = map[string]string{
 }
 
 var notify = map[string]string{
-	"notify": "\x1b]9;notification text\x07", // TODO: add to ansi?
+	"notify": ansi.Notify("notification body"),
 }
 
 var termcolor = map[string]string{

@@ -1,1 +1,1 @@
-OSC "\x1b]9;notification text\a": Notify "notification text"
+OSC "\x1b]9;notification body\a": Notify "notification body"
