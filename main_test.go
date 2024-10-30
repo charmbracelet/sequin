@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/hex"
 	"strings"
 	"testing"
 
@@ -12,33 +13,35 @@ import (
 
 var cursor = map[string]string{
 	// cursor
-	"save":               ansi.SaveCursor,
-	"restore":            ansi.RestoreCursor,
-	"request pos":        ansi.RequestCursorPosition,
-	"request cursor pos": ansi.RequestExtendedCursorPosition,
-	"up 1":               ansi.CursorUp1,
-	"up":                 ansi.CursorUp(5),
-	"down 1":             ansi.CursorDown1,
-	"down":               ansi.CursorDown(3),
-	"right 1":            ansi.CursorRight1,
-	"right":              ansi.CursorRight(3),
-	"left 1":             ansi.CursorLeft1,
-	"left":               ansi.CursorLeft(3),
-	"next line":          ansi.CursorNextLine(3),
-	"previous line":      ansi.CursorPreviousLine(3),
-	"set pos":            ansi.SetCursorPosition(10, 20),
-	"origin":             ansi.CursorOrigin,
-	"save pos":           ansi.SaveCursorPosition,
-	"restore pos":        ansi.RestoreCursorPosition,
-	"style 0":            ansi.SetCursorStyle(0),
-	"style 1":            ansi.SetCursorStyle(1),
-	"style 2":            ansi.SetCursorStyle(2),
-	"style 3":            ansi.SetCursorStyle(3),
-	"style 4":            ansi.SetCursorStyle(4),
-	"style 5":            ansi.SetCursorStyle(5),
-	"style 6":            ansi.SetCursorStyle(6),
-	"style 7":            ansi.SetCursorStyle(7),
-	"pointer shape":      ansi.SetPointerShape("crosshair"),
+	"save":                         ansi.SaveCursor,
+	"restore":                      ansi.RestoreCursor,
+	"request pos":                  ansi.RequestCursorPosition,
+	"request extended pos":         ansi.RequestExtendedCursorPosition,
+	"invalid request extended pos": strings.Replace(ansi.RequestExtendedCursorPosition, "6", "7", 1),
+	"up 1":                         ansi.CursorUp1,
+	"up":                           ansi.CursorUp(5),
+	"down 1":                       ansi.CursorDown1,
+	"down":                         ansi.CursorDown(3),
+	"right 1":                      ansi.CursorRight1,
+	"right":                        ansi.CursorRight(3),
+	"left 1":                       ansi.CursorLeft1,
+	"left":                         ansi.CursorLeft(3),
+	"next line":                    ansi.CursorNextLine(3),
+	"previous line":                ansi.CursorPreviousLine(3),
+	"set pos":                      ansi.SetCursorPosition(10, 20),
+	"origin":                       ansi.CursorOrigin,
+	"save pos":                     ansi.SaveCursorPosition,
+	"restore pos":                  ansi.RestoreCursorPosition,
+	"style 0":                      ansi.SetCursorStyle(0),
+	"style 1":                      ansi.SetCursorStyle(1),
+	"style 2":                      ansi.SetCursorStyle(2),
+	"style 3":                      ansi.SetCursorStyle(3),
+	"style 4":                      ansi.SetCursorStyle(4),
+	"style 5":                      ansi.SetCursorStyle(5),
+	"style 6":                      ansi.SetCursorStyle(6),
+	"style 7":                      ansi.SetCursorStyle(7),
+	"pointer shape":                ansi.SetPointerShape("crosshair"),
+	"invalid pointer shape":        strings.Replace(ansi.SetPointerShape(""), ";", "", 1),
 }
 
 var screen = map[string]string{
@@ -70,6 +73,9 @@ var mode = map[string]string{
 	"enable cursor visibility":    ansi.ShowCursor,
 	"disable cursor visibility":   ansi.HideCursor,
 	"request cursor visibility":   ansi.RequestCursorVisibility,
+	"enable mouse":                ansi.EnableMouse,
+	"disable mouse":               ansi.DisableMouse,
+	"request mouse":               ansi.RequestMouse,
 	"enable mouse hilite":         ansi.EnableMouseHilite,
 	"disable mouse hilite":        ansi.DisableMouseHilite,
 	"request mouse hilite":        ansi.RequestMouseHilite,
@@ -100,26 +106,32 @@ var mode = map[string]string{
 	"enable win32 input":          ansi.EnableWin32Input,
 	"disable win32 input":         ansi.DisableWin32Input,
 	"request win32 input":         ansi.RequestWin32Input,
+	"invalid":                     strings.Replace(ansi.ShowCursor, "25", "27", 1),
+	"non private":                 strings.Replace(ansi.ShowCursor, "?", "", 1),
 }
 
 var kitty = map[string]string{
-	"set all mode 1": ansi.KittyKeyboard(ansi.KittyAllFlags, 1),
-	"set all mode 2": ansi.KittyKeyboard(ansi.KittyAllFlags, 2),
-	"set all mode 3": ansi.KittyKeyboard(ansi.KittyAllFlags, 3),
-	"request":        ansi.RequestKittyKeyboard,
-	"disable":        ansi.DisableKittyKeyboard,
-	"pop":            ansi.PopKittyKeyboard(2),
-	"push 1":         ansi.PushKittyKeyboard(1),
-	"push 2":         ansi.PushKittyKeyboard(2),
-	"push 4":         ansi.PushKittyKeyboard(4),
-	"push 8":         ansi.PushKittyKeyboard(8),
-	"push 16":        ansi.PushKittyKeyboard(16),
+	"set all mode 1":   ansi.KittyKeyboard(ansi.KittyAllFlags, 1),
+	"set all mode 2":   ansi.KittyKeyboard(ansi.KittyAllFlags, 2),
+	"set all mode 3":   ansi.KittyKeyboard(ansi.KittyAllFlags, 3),
+	"set invalid mode": ansi.KittyKeyboard(ansi.KittyAllFlags, 4),
+	"request":          ansi.RequestKittyKeyboard,
+	"disable":          ansi.DisableKittyKeyboard,
+	"pop":              ansi.PopKittyKeyboard(2),
+	"push 1":           ansi.PushKittyKeyboard(1),
+	"push 2":           ansi.PushKittyKeyboard(2),
+	"push 4":           ansi.PushKittyKeyboard(4),
+	"push 8":           ansi.PushKittyKeyboard(8),
+	"push 16":          ansi.PushKittyKeyboard(16),
 }
 
 var others = map[string]string{
 	"request primary device attrs": ansi.RequestPrimaryDeviceAttributes,
 	"request xt version":           ansi.RequestXTVersion,
 	"termcap":                      ansi.RequestTermcap("bw", "ccc"),
+	"invalid termcap":              strings.Replace(ansi.RequestTermcap("a"), hex.EncodeToString([]byte("a")), "", 1),
+	"invalid termcap hex":          strings.Replace(ansi.RequestTermcap("a"), hex.EncodeToString([]byte("a")), "a", 1),
+	"invalid xt":                   strings.Replace(ansi.RequestXTVersion, "0", "1", 1),
 }
 
 var sgr = map[string]string{
@@ -133,19 +145,24 @@ var sgr = map[string]string{
 }
 
 var title = map[string]string{
-	"set":      ansi.SetWindowTitle("hello"),
-	"set icon": ansi.SetIconName("terminal"),
-	"set both": ansi.SetIconNameWindowTitle("terminal"),
+	"set":         ansi.SetWindowTitle("hello"),
+	"set icon":    ansi.SetIconName("terminal"),
+	"set both":    ansi.SetIconNameWindowTitle("terminal"),
+	"invalid":     strings.Replace(ansi.SetWindowTitle("hello"), ";hello", "", 1),
+	"invalid cmd": strings.Replace(ansi.SetWindowTitle("hello"), "2", "5", 1),
 }
 
 var hyperlink = map[string]string{
-	"uri only": ansi.SetHyperlink("https://charm.sh"),
-	"full":     ansi.SetHyperlink("https://charm.sh", "my title"),
-	"reset":    ansi.ResetHyperlink("my title"),
+	"uri only":        ansi.SetHyperlink("https://charm.sh"),
+	"full":            ansi.SetHyperlink("https://charm.sh", "my title"),
+	"reset":           ansi.ResetHyperlink("my title"),
+	"multiple params": ansi.SetHyperlink("https://charm.sh", "my title", "some description"),
+	"invalid":         strings.Replace(ansi.ResetHyperlink(), ";", "", 1),
 }
 
 var notify = map[string]string{
-	"notify": ansi.Notify("notification body"),
+	"notify":  ansi.Notify("notification body"),
+	"invalid": strings.Replace(ansi.Notify(""), ";", "", 1),
 }
 
 var termcolor = map[string]string{
@@ -158,6 +175,8 @@ var termcolor = map[string]string{
 	"reset bg":       ansi.ResetBackgroundColor,
 	"reset fg":       ansi.ResetForegroundColor,
 	"reset cursor":   ansi.ResetCursorColor,
+	"invalid set":    strings.Replace(ansi.SetBackgroundColor(ansi.Black), ";", "", 1),
+	"invalid reset":  strings.Replace(ansi.ResetBackgroundColor, "111", "111;1", 1),
 }
 
 var clipboard = map[string]string{
@@ -165,6 +184,8 @@ var clipboard = map[string]string{
 	"request primary": ansi.RequestPrimaryClipboard,
 	"set system":      ansi.SetSystemClipboard("hello"),
 	"set primary":     ansi.SetPrimaryClipboard("hello"),
+	"incomplete":      strings.Replace(ansi.RequestPrimaryClipboard, ";?", "", 1),
+	"invalid":         strings.Replace(ansi.SetPrimaryClipboard("hello"), "=", "", 1),
 }
 
 func TestSequences(t *testing.T) {

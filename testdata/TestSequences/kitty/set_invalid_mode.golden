@@ -1,0 +1,1 @@
+CSI "\x1b[=31;4u": Set "Disambiguate escape codes, Report event types, Report alternate keys, Report all keys as escape codes, Report associated text" Kitty keyboard flags to "Unknown mode"

@@ -12,32 +12,27 @@ func handleCursor(p *ansi.Parser) (string, error) {
 		count = ansi.Param(p.Params[0]).Param()
 	}
 
-	if count == 0 {
-		// Default value is 1
-		count = 1
-	}
-
 	cmd := ansi.Cmd(p.Cmd)
 	isPrivate := cmd.Marker() == '?'
 	switch cmd.Command() {
 	case 'A':
 		// CUU - Cursor Up
-		return fmt.Sprintf("Cursor up %d", count), nil
+		return fmt.Sprintf("Cursor up %d", default1(count)), nil
 	case 'B':
 		// CUD - Cursor Down
-		return fmt.Sprintf("Cursor down %d", count), nil
+		return fmt.Sprintf("Cursor down %d", default1(count)), nil
 	case 'C':
 		// CUF - Cursor Forward
-		return fmt.Sprintf("Cursor right %d", count), nil
+		return fmt.Sprintf("Cursor right %d", default1(count)), nil
 	case 'D':
 		// CUB - Cursor Back
-		return fmt.Sprintf("Cursor left %d", count), nil
+		return fmt.Sprintf("Cursor left %d", default1(count)), nil
 	case 'E':
-		return fmt.Sprintf("Cursor next line %d", count), nil
+		return fmt.Sprintf("Cursor next line %d", default1(count)), nil
 	case 'F':
-		return fmt.Sprintf("Cursor previous line %d", count), nil
+		return fmt.Sprintf("Cursor previous line %d", default1(count)), nil
 	case 'H':
-		row := count
+		row := default1(count)
 		col := 1
 		if p.ParamsLen > 1 {
 			col = p.Params[1]
@@ -56,14 +51,14 @@ func handleCursor(p *ansi.Parser) (string, error) {
 	case 'u':
 		return "Restore cursor position", nil
 	case 'q':
-		return fmt.Sprintf("Set cursor style %s", descCursorStyle(count)), nil
+		return fmt.Sprintf("Set cursor style %s", descCursorStyle(default1(count))), nil
 	}
 	return "", errUnhandled
 }
 
 func descCursorStyle(i int) string {
 	switch i {
-	case 1:
+	case 0, 1:
 		return "Blinking block"
 	case 2:
 		return "Steady block"

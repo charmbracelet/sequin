@@ -1,1 +1,1 @@
-CSI "\x1b[103;30;58;5;14m": Bright background color: Yellow, Foreground color: Black, TODO, Blink, TODO
+CSI "\x1b[103;30;58;5;14m": Bright background color: Yellow, Foreground color: Black, Underline color: 14

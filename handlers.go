@@ -88,3 +88,10 @@ func printf(format string, v ...any) handlerFn {
 		return fmt.Sprintf(format, v...), nil
 	}
 }
+
+func default1(i int) int {
+	if i == 0 {
+		return 1
+	}
+	return i
+}

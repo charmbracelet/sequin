@@ -55,6 +55,22 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 			str += "Invisible"
 		case 9:
 			str += "Crossed-out"
+		case 21:
+			str += "No bold"
+		case 22:
+			str += "Normal intensity"
+		case 23:
+			str += "No italic"
+		case 24:
+			str += "No underline"
+		case 25:
+			str += "No blink"
+		case 27:
+			str += "No reverse"
+		case 28:
+			str += "No conceal"
+		case 29:
+			str += "No crossed-out"
 		case 30, 31, 32, 33, 34, 35, 36, 37:
 			str += fmt.Sprintf("Foreground color: %s", basicColors[int(param)-30])
 		case 38:
@@ -67,12 +83,14 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 			str += fmt.Sprintf("Background color: %d", readColor(&i, parser.Params))
 		case 49:
 			str += "Default background color"
+		case 58, 59:
+			str += fmt.Sprintf("Underline color: %d", readColor(&i, parser.Params))
 		case 90, 91, 92, 93, 94, 95, 96, 97:
 			str += fmt.Sprintf("Bright foreground color: %s", basicColors[int(param)-90])
 		case 100, 101, 102, 103, 104, 105, 106, 107:
 			str += fmt.Sprintf("Bright background color: %s", basicColors[int(param)-100])
 		default:
-			str += "TODO"
+			str += fmt.Sprintf("TODO: %d", param.Param())
 		}
 	}
 

@@ -7,31 +7,20 @@ import (
 )
 
 func handleMode(parser *ansi.Parser) (string, error) {
-	if parser.ParamsLen == 0 {
-		// Invalid, ignore
-		return "", errInvalid
-	}
-
 	mode := modeDesc(ansi.Param(parser.Params[0]).Param())
 	cmd := ansi.Cmd(parser.Cmd)
-	isPrivate := cmd.Marker() == '?'
+	private := ""
+	if cmd.Marker() == '?' {
+		private = "private "
+	}
 	switch cmd.Command() {
 	case 'p':
 		// DECRQM - Request Mode
-		if isPrivate {
-			return fmt.Sprintf("Request private mode %q", mode), nil
-		}
-		return fmt.Sprintf("Request mode %q", mode), nil
+		return fmt.Sprintf("Request %smode %q", private, mode), nil
 	case 'h':
-		if isPrivate {
-			return fmt.Sprintf("Enable private mode %q", mode), nil
-		}
-		return fmt.Sprintf("Enable mode %q", mode), nil
+		return fmt.Sprintf("Enable %smode %q", private, mode), nil
 	case 'l':
-		if isPrivate {
-			return fmt.Sprintf("Disable private mode %q", mode), nil
-		}
-		return fmt.Sprintf("Disable mode %q", mode), nil
+		return fmt.Sprintf("Disable %smode %q", private, mode), nil
 	}
 	return "", errUnhandled
 }

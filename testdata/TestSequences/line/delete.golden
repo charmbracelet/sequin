@@ -1,1 +1,1 @@
-CSI "\x1b[5M": CSI 5 M: Delete 5 lines
+CSI "\x1b[5M": Delete 5 lines

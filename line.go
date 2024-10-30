@@ -12,30 +12,25 @@ func handleLine(parser *ansi.Parser) (string, error) {
 		count = ansi.Param(parser.Params[0]).Param()
 	}
 
-	if count == 0 {
-		// Default value is 1
-		count = 1
-	}
-
 	cmd := ansi.Cmd(parser.Cmd)
 	switch cmd.Command() {
 	case 'K':
 		switch count {
-		case 1:
+		case 0:
 			return "Erase line right", nil
-		case 2:
+		case 1:
 			return "Erase line left", nil
-		case 3:
+		case 2:
 			return "Erase entire line", nil
 		}
 	case 'L':
-		return fmt.Sprintf("CSI %d L: Insert %[1]d blank lines", count), nil
+		return fmt.Sprintf("Insert %d blank lines", default1(count)), nil
 	case 'M':
-		return fmt.Sprintf("CSI %d M: Delete %[1]d lines", count), nil
+		return fmt.Sprintf("Delete %d lines", default1(count)), nil
 	case 'S':
-		return fmt.Sprintf("CSI %d S: Scroll up %[1]d lines", count), nil
+		return fmt.Sprintf("Scroll up %d lines", default1(count)), nil
 	case 'T':
-		return fmt.Sprintf("CSI %d T: Scroll down %[1]d lines", count), nil
+		return fmt.Sprintf("Scroll down %d lines", default1(count)), nil
 	}
 	return "", errUnhandled
 }

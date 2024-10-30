@@ -26,10 +26,6 @@ func handleScreen(parser *ansi.Parser) (string, error) {
 			return "Erase entire display", nil
 		}
 	case 'r':
-		if count == 0 {
-			// Default value is 1
-			count = 1
-		}
 		top := count
 		bottom := 0
 		if parser.ParamsLen > 1 {

@@ -1,1 +1,1 @@
-CSI "\x1b[3L": CSI 3 L: Insert 3 blank lines
+CSI "\x1b[3L": Insert 3 blank lines
