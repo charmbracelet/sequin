@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleCursor(p *ansi.Parser) {
+func handleCursor(p *ansi.Parser) (string, error) {
 	var count int
 	if p.ParamsLen > 0 {
 		count = ansi.Param(p.Params[0]).Param()
@@ -22,38 +22,39 @@ func handleCursor(p *ansi.Parser) {
 	switch cmd.Command() {
 	case 'A':
 		// CUU - Cursor Up
-		fmt.Printf("Cursor up %d", count)
+		return fmt.Sprintf("Cursor up %d", count), nil
 	case 'B':
 		// CUD - Cursor Down
-		fmt.Printf("Cursor down %d", count)
+		return fmt.Sprintf("Cursor down %d", count), nil
 	case 'C':
 		// CUF - Cursor Forward
-		fmt.Printf("Cursor right %d", count)
+		return fmt.Sprintf("Cursor right %d", count), nil
 	case 'D':
 		// CUB - Cursor Back
-		fmt.Printf("Cursor left %d", count)
+		return fmt.Sprintf("Cursor left %d", count), nil
 	case 'E':
-		fmt.Printf("Cursor next line %d", count)
+		return fmt.Sprintf("Cursor next line %d", count), nil
 	case 'F':
-		fmt.Printf("Cursor previous line %d", count)
+		return fmt.Sprintf("Cursor previous line %d", count), nil
 	case 'H':
 		row := count
 		col := 1
 		if p.ParamsLen > 1 {
 			col = p.Params[1]
 		}
-		fmt.Printf("Set cursor position row=%[1]d col=%[2]d", row, col)
+		return fmt.Sprintf("Set cursor position row=%[1]d col=%[2]d", row, col), nil
 	case 'n':
 		if count != 6 {
-			fmt.Printf("unknown")
-			return
+			return "", errUnknown
 		}
 		if isPrivate {
-			fmt.Printf("Request extended cursor position")
-		} else {
-			fmt.Printf("Request cursor position")
+			return "Request extended cursor position", nil
 		}
+		return "Request cursor position", nil
 	case 's':
-		fmt.Printf("Save cursor position")
+		return "Save cursor position", nil
+	case 'u':
+		return "Restore cursor position", nil
 	}
+	return "", errUnknown
 }

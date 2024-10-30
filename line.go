@@ -6,13 +6,13 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleLine(parser *ansi.Parser) {
+func handleLine(parser *ansi.Parser) (string, error) {
 	var count int
 	if parser.ParamsLen > 0 {
 		count = ansi.Param(parser.Params[0]).Param()
 	}
 
-	if parser.Cmd != 'K' && count == 0 {
+	if count == 0 {
 		// Default value is 1
 		count = 1
 	}
@@ -20,25 +20,22 @@ func handleLine(parser *ansi.Parser) {
 	cmd := ansi.Cmd(parser.Cmd)
 	switch cmd.Command() {
 	case 'K':
-		fmt.Print(must([]string{
-			"Erase line right",
-			"Erase line left",
-			"Erase entire line",
-		}, count))
+		switch count {
+		case 1:
+			return "Erase line right", nil
+		case 2:
+			return "Erase line left", nil
+		case 3:
+			return "Erase entire line", nil
+		}
 	case 'L':
-		fmt.Printf("CSI %d L: Insert %[1]d blank lines", count)
+		return fmt.Sprintf("CSI %d L: Insert %[1]d blank lines", count), nil
 	case 'M':
-		fmt.Printf("CSI %d M: Delete %[1]d lines", count)
+		return fmt.Sprintf("CSI %d M: Delete %[1]d lines", count), nil
 	case 'S':
-		fmt.Printf("CSI %d S: Scroll up %[1]d lines", count)
+		return fmt.Sprintf("CSI %d S: Scroll up %[1]d lines", count), nil
 	case 'T':
-		fmt.Printf("CSI %d T: Scroll down %[1]d lines", count)
+		return fmt.Sprintf("CSI %d T: Scroll down %[1]d lines", count), nil
 	}
-}
-
-func must(ss []string, i int) string {
-	if len(ss) <= i {
-		return "invalid"
-	}
-	return ss[i]
+	return "", errUnknown
 }

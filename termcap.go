@@ -9,9 +9,9 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleTermcap(p *ansi.Parser) {
+func handleTermcap(p *ansi.Parser) (string, error) {
 	if p.ParamsLen != 0 || p.DataLen == 0 {
-		return
+		return "", errUnknown
 	}
 
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
@@ -20,10 +20,10 @@ func handleTermcap(p *ansi.Parser) {
 	for _, part := range parts {
 		capName, err := hex.DecodeString(string(part))
 		if err != nil {
-			return
+			return "", err
 		}
 		caps = append(caps, string(capName))
 	}
 
-	fmt.Printf("Request termcap entry for %q", strings.Join(caps, ", "))
+	return fmt.Sprintf("Request termcap entry for %q", strings.Join(caps, ", ")), nil
 }

@@ -6,10 +6,10 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleMode(parser *ansi.Parser) {
+func handleMode(parser *ansi.Parser) (string, error) {
 	if parser.ParamsLen == 0 {
 		// Invalid, ignore
-		return
+		return "", errUnknown
 	}
 
 	mode := modeDesc(ansi.Param(parser.Params[0]).Param())
@@ -19,23 +19,21 @@ func handleMode(parser *ansi.Parser) {
 	case 'p':
 		// DECRQM - Request Mode
 		if isPrivate {
-			fmt.Printf("Request private mode %q", mode)
-		} else {
-			fmt.Printf("Request mode %q", mode)
+			return fmt.Sprintf("Request private mode %q", mode), nil
 		}
+		return fmt.Sprintf("Request mode %q", mode), nil
 	case 'h':
 		if isPrivate {
-			fmt.Printf("Enable private mode %q", mode)
-		} else {
-			fmt.Printf("Enable mode %q", mode)
+			return fmt.Sprintf("Enable private mode %q", mode), nil
 		}
+		return fmt.Sprintf("Enable mode %q", mode), nil
 	case 'l':
 		if isPrivate {
-			fmt.Printf("Disable private mode %q", mode)
-		} else {
-			fmt.Printf("Disable mode %q", mode)
+			return fmt.Sprintf("Disable private mode %q", mode), nil
 		}
+		return fmt.Sprintf("Disable mode %q", mode), nil
 	}
+	return "", errUnknown
 }
 
 func modeDesc(mode int) string {

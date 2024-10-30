@@ -13,18 +13,18 @@ var clipboardName = map[string]string{
 	"p": "primary",
 }
 
-func handleClipboard(p *ansi.Parser) {
+func handleClipboard(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 3 {
 		// Invalid, ignore
-		return
+		return "", errUnknown
 	}
 
 	b64, err := base64.StdEncoding.DecodeString(string(parts[2]))
 	if err != nil {
 		// Invalid, ignore
-		return
+		return "", err
 	}
 
-	fmt.Printf("Set clipboard %q to %q", clipboardName[string(parts[1])], b64)
+	return fmt.Sprintf("Set clipboard %q to %q", clipboardName[string(parts[1])], b64), nil
 }

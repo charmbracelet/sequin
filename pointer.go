@@ -7,12 +7,12 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handlePointerShape(p *ansi.Parser) {
+func handlePointerShape(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 2 {
 		// Invalid, ignore
-		return
+		return "", errUnknown
 	}
 
-	fmt.Printf("Set pointer shape to %q", parts[1])
+	return fmt.Sprintf("Set pointer shape to %q", parts[1]), nil
 }

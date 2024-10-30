@@ -7,21 +7,22 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleHyperlink(p *ansi.Parser) {
+func handleHyperlink(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 3 {
 		// Invalid, ignore
-		return
+		return "", errUnknown
 	}
 
 	opts := bytes.Split(parts[1], []byte{':'})
-	fmt.Printf("Set hyperlink, ")
+	buf := "Set hyperlink, "
 	for i, opt := range opts {
 		if i > 0 {
-			fmt.Printf(", ")
+			buf += ", "
 		}
-		fmt.Printf("%s", opt)
+		buf += string(opt)
 	}
 
-	fmt.Printf(" to %q", parts[2])
+	buf += fmt.Sprintf(" to %q", parts[2])
+	return buf, nil
 }

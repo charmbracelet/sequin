@@ -1,20 +1,16 @@
 package main
 
-import (
-	"fmt"
+import "github.com/charmbracelet/x/ansi"
 
-	"github.com/charmbracelet/x/ansi"
-)
-
-func handleXT(parser *ansi.Parser) {
+func handleXT(parser *ansi.Parser) (string, error) {
 	var count int
 	if parser.ParamsLen > 0 {
 		count = ansi.Param(parser.Params[0]).Param()
 	}
 
 	if count != 0 {
-		fmt.Printf("unknown")
+		return "", errUnknown
 	}
 
-	fmt.Printf("Request XT Version")
+	return "Request XT Version", nil
 }

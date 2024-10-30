@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleKitty(parser *ansi.Parser) {
+func handleKitty(parser *ansi.Parser) (string, error) {
 	flagDesc := func(flag int) string {
 		var r []string
 		if flag&1 != 0 {
@@ -48,19 +48,19 @@ func handleKitty(parser *ansi.Parser) {
 	cmd := ansi.Cmd(parser.Cmd)
 	switch cmd.Marker() {
 	case '?':
-		fmt.Printf("Request Kitty keyboard")
+		return "Request Kitty keyboard", nil
 	case '>':
 		if first == 0 {
-			fmt.Printf("Disable Kitty keyboard")
-		} else {
-			fmt.Printf("Push %q Kitty keyboard flag", flagDesc(first))
+			return "Disable Kitty keyboard", nil
 		}
+		return fmt.Sprintf("Push %q Kitty keyboard flag", flagDesc(first)), nil
 	case '<':
-		fmt.Printf("Pop %d Kitty keyboard flags", first)
+		return fmt.Sprintf("Pop %d Kitty keyboard flags", first), nil
 	case '=':
 		if parser.ParamsLen > 1 {
 			second := ansi.Param(parser.Params[1]).Param()
-			fmt.Printf("Set %q Kitty keyboard flags to %q", flagDesc(first), modeDesc(second))
+			return fmt.Sprintf("Set %q Kitty keyboard flags to %q", flagDesc(first), modeDesc(second)), nil
 		}
 	}
+	return "", errUnknown
 }

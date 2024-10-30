@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 
 	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/ansi/parser"
+	"github.com/spf13/cobra"
 )
 
 const (
@@ -18,22 +18,52 @@ const (
 
 var buf bytes.Buffer
 
-func flushPrint() {
-	if buf.Len() == 0 {
-		return
+func main() {
+	if err := cmd().Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
-	fmt.Printf("Text: %q\n", buf.String())
-	buf.Reset()
 }
 
-func main() {
-	in := strings.Join(os.Args[1:], " ")
-	if in == "-" || in == "" {
-		bts, err := io.ReadAll(os.Stdin)
-		if err != nil {
-			panic(err)
+func cmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "sequin",
+		Short: "Human-readable ANSI sequences",
+		Args:  cobra.NoArgs,
+		Example: `
+printf '\x1b[m' | sequin
+sequin <file
+	`,
+		RunE: exec,
+	}
+}
+
+func exec(cmd *cobra.Command, _ []string) error {
+	in, err := io.ReadAll(cmd.InOrStdin())
+	if err != nil {
+		return err
+	}
+
+	flushPrint := func() {
+		if buf.Len() == 0 {
+			return
 		}
-		in = string(bts)
+		cmd.Printf("Text: %q\n", buf.String())
+		buf.Reset()
+	}
+
+	handle := func(reg map[int]handlerFn, p *ansi.Parser) {
+		handler, ok := reg[p.Cmd]
+		if !ok {
+			cmd.PrintErrln(errUnknown)
+			return
+		}
+		out, err := handler(p)
+		if err != nil {
+			cmd.PrintErrln(err.Error())
+			return
+		}
+		cmd.Println(out)
 	}
 
 	var state byte
@@ -46,77 +76,54 @@ func main() {
 		switch {
 		case ansi.HasCsiPrefix(seq):
 			flushPrint()
-			fmt.Printf("CSI %q: ", seq)
-
-			handler, ok := csiHandlers[p.Cmd]
-			if ok {
-				handler(p)
-			}
-
-			fmt.Println()
+			cmd.Printf("CSI %q: ", seq)
+			handle(csiHandlers, p)
 
 		case ansi.HasDcsPrefix(seq):
 			flushPrint()
-			fmt.Printf("DCS %q: ", seq)
-			handler, ok := dcsHandlers[p.Cmd]
-			if ok {
-				handler(p)
-			}
-
-			fmt.Println()
+			cmd.Printf("DCS %q: ", seq)
+			handle(dcsHandlers, p)
 
 		case ansi.HasOscPrefix(seq):
 			flushPrint()
-			fmt.Printf("OSC %q: ", seq)
-			handler, ok := oscHandlers[p.Cmd]
-			if ok {
-				handler(p)
-			}
-
-			fmt.Println()
+			cmd.Printf("OSC %q: ", seq)
+			handle(oscHandlers, p)
 
 		case ansi.HasApcPrefix(seq):
 			flushPrint()
-			fmt.Printf("APC %q", seq)
+			cmd.Printf("APC %q", seq)
 
 			switch {
 			case ansi.HasPrefix(p.Data, []byte("G")):
 				// Kitty graphics
 			}
 
-			fmt.Println()
+			cmd.Println()
 
 		case ansi.HasEscPrefix(seq):
 			flushPrint()
 
 			if len(seq) == 1 {
 				// just an ESC
-				fmt.Println("Control code ESC")
+				cmd.Println("Control code ESC")
 				break
 			}
 
-			fmt.Printf("ESC: %q", seq)
-			switch p.Cmd {
-			case 7:
-				// save cursor
-			case 8:
-				// restore cursor
-			}
-
-			fmt.Println()
+			cmd.Printf("ESC: %q: ", seq)
+			handle(escHandler, p)
 
 		case width == 0 && len(seq) == 1:
 			flushPrint()
 			// control code
-			fmt.Printf("Control code %q: %s\n", seq, ctrlCodes[seq[0]])
+			cmd.Printf("Control code %q: %s\n", seq, ctrlCodes[seq[0]])
 
 		case width > 0:
 			// Text
-			buf.WriteString(seq)
+			buf.Write(seq)
 
 		default:
 			flushPrint()
-			fmt.Printf("Unknown %q\n", seq)
+			cmd.Printf("Unknown %q\n", seq)
 		}
 
 		in = in[n:]
@@ -124,6 +131,7 @@ func main() {
 	}
 
 	flushPrint()
+	return nil
 }
 
 var ctrlCodes = map[byte]string{

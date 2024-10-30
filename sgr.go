@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleSgr(parser *ansi.Parser) {
+func handleSgr(parser *ansi.Parser) (string, error) {
 	var str string
 	if parser.ParamsLen == 0 {
 		str = "Reset style"
@@ -74,7 +74,7 @@ func handleSgr(parser *ansi.Parser) {
 		}
 	}
 
-	fmt.Print(str)
+	return str, nil
 }
 
 var basicColors = map[int]string{

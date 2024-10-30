@@ -7,18 +7,19 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleTitle(p *ansi.Parser) {
+func handleTitle(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 2 {
 		// Invalid, ignore
-		return
+		return "", errUnknown
 	}
 	switch p.Cmd {
 	case 0:
-		fmt.Printf("Set icon name and window title to %s", parts[1])
+		return fmt.Sprintf("Set icon name and window title to %s", parts[1]), nil
 	case 1:
-		fmt.Printf("Set icon name to %s", parts[1])
+		return fmt.Sprintf("Set icon name to %s", parts[1]), nil
 	case 2:
-		fmt.Printf("Set window title to %s", parts[1])
+		return fmt.Sprintf("Set window title to %s", parts[1]), nil
 	}
+	return "", errUnknown
 }
