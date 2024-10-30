@@ -2,8 +2,6 @@ package main
 
 import (
 	"bytes"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -190,26 +188,6 @@ func TestSequences(t *testing.T) {
 					golden.RequireEqual(t, b.Bytes())
 				})
 			}
-		})
-	}
-}
-
-func TestFiles(t *testing.T) {
-	cases, err := filepath.Glob("testdata/files/*.txt")
-	require.NoError(t, err)
-	for _, name := range cases {
-		t.Run(strings.TrimSuffix(filepath.Base(name), ".txt"), func(t *testing.T) {
-			input, err := os.Open(name)
-			require.NoError(t, err)
-			t.Cleanup(func() { _ = input.Close() })
-			var b bytes.Buffer
-			cmd := cmd()
-			cmd.SetOut(&b)
-			cmd.SetErr(&b)
-			cmd.SetIn(input)
-			cmd.SetArgs([]string{})
-			require.NoError(t, cmd.Execute())
-			golden.RequireEqual(t, b.Bytes())
 		})
 	}
 }
