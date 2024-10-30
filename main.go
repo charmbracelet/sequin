@@ -55,7 +55,7 @@ func exec(cmd *cobra.Command, _ []string) error {
 	handle := func(reg map[int]handlerFn, p *ansi.Parser) {
 		handler, ok := reg[p.Cmd]
 		if !ok {
-			cmd.PrintErrln(errUnknown)
+			cmd.PrintErrln(errUnhandled)
 			return
 		}
 		out, err := handler(p)

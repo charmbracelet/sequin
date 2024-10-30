@@ -11,7 +11,7 @@ import (
 
 func handleTermcap(p *ansi.Parser) (string, error) {
 	if p.ParamsLen != 0 || p.DataLen == 0 {
-		return "", errUnknown
+		return "", errInvalid
 	}
 
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})

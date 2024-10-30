@@ -9,7 +9,7 @@ func handleXT(parser *ansi.Parser) (string, error) {
 	}
 
 	if count != 0 {
-		return "", errUnknown
+		return "", errUnhandled
 	}
 
 	return "Request XT Version", nil

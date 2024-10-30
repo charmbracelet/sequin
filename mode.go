@@ -9,7 +9,7 @@ import (
 func handleMode(parser *ansi.Parser) (string, error) {
 	if parser.ParamsLen == 0 {
 		// Invalid, ignore
-		return "", errUnknown
+		return "", errInvalid
 	}
 
 	mode := modeDesc(ansi.Param(parser.Params[0]).Param())
@@ -33,7 +33,7 @@ func handleMode(parser *ansi.Parser) (string, error) {
 		}
 		return fmt.Sprintf("Disable mode %q", mode), nil
 	}
-	return "", errUnknown
+	return "", errUnhandled
 }
 
 func modeDesc(mode int) string {

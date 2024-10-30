@@ -17,7 +17,7 @@ func handleClipboard(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 3 {
 		// Invalid, ignore
-		return "", errUnknown
+		return "", errInvalid
 	}
 
 	if string(parts[2]) == "?" {

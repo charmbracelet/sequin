@@ -74,7 +74,10 @@ var escHandler = map[int]handlerFn{
 	'8': printf("Restore cursor"),
 }
 
-var errUnknown = errors.New("unknown")
+var (
+	errUnhandled = errors.New("TODO: unhandled sequence")
+	errInvalid   = errors.New("invalid sequence")
+)
 
 type handlerFn = func(*ansi.Parser) (string, error)
 

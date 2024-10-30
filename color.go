@@ -10,7 +10,7 @@ func handleTerminalColor(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 2 {
 		// Invalid, ignore
-		return "", errUnknown
+		return "", errInvalid
 	}
 
 	arg := string(parts[1])
@@ -39,7 +39,7 @@ func handleResetTerminalColor(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 1 {
 		// Invalid, ignore
-		return "", errUnknown
+		return "", errInvalid
 	}
 	var buf string
 	switch p.Cmd {

@@ -62,5 +62,5 @@ func handleKitty(parser *ansi.Parser) (string, error) {
 			return fmt.Sprintf("Set %q Kitty keyboard flags to %q", flagDesc(first), modeDesc(second)), nil
 		}
 	}
-	return "", errUnknown
+	return "", errUnhandled
 }

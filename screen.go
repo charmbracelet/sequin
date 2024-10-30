@@ -42,5 +42,5 @@ func handleScreen(parser *ansi.Parser) (string, error) {
 		), nil
 	}
 
-	return "", errUnknown
+	return "", errUnhandled
 }

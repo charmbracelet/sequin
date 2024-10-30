@@ -11,7 +11,7 @@ func handleHyperlink(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 3 {
 		// Invalid, ignore
-		return "", errUnknown
+		return "", errInvalid
 	}
 
 	opts := bytes.Split(parts[1], []byte{':'})

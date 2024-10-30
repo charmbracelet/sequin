@@ -37,5 +37,5 @@ func handleLine(parser *ansi.Parser) (string, error) {
 	case 'T':
 		return fmt.Sprintf("CSI %d T: Scroll down %[1]d lines", count), nil
 	}
-	return "", errUnknown
+	return "", errUnhandled
 }

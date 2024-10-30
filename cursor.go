@@ -45,7 +45,7 @@ func handleCursor(p *ansi.Parser) (string, error) {
 		return fmt.Sprintf("Set cursor position row=%[1]d col=%[2]d", row, col), nil
 	case 'n':
 		if count != 6 {
-			return "", errUnknown
+			return "", errInvalid
 		}
 		if isPrivate {
 			return "Request extended cursor position", nil
@@ -56,5 +56,5 @@ func handleCursor(p *ansi.Parser) (string, error) {
 	case 'u':
 		return "Restore cursor position", nil
 	}
-	return "", errUnknown
+	return "", errUnhandled
 }

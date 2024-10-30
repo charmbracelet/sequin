@@ -11,7 +11,7 @@ func handleTitle(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 2 {
 		// Invalid, ignore
-		return "", errUnknown
+		return "", errInvalid
 	}
 	switch p.Cmd {
 	case 0:
@@ -21,5 +21,5 @@ func handleTitle(p *ansi.Parser) (string, error) {
 	case 2:
 		return fmt.Sprintf("Set window title to %s", parts[1]), nil
 	}
-	return "", errUnknown
+	return "", errUnhandled
 }
