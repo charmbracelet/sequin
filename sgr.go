@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleSgr(parser *ansi.Parser) (string, error) {
+func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 	var str string
 	if parser.ParamsLen == 0 {
 		str = "Reset style"

@@ -57,7 +57,6 @@ func handleCursor(p *ansi.Parser) (string, error) {
 		return "Restore cursor position", nil
 	case 'q':
 		return fmt.Sprintf("Set cursor style %s", descCursorStyle(count)), nil
-
 	}
 	return "", errUnhandled
 }
