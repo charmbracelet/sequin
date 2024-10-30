@@ -9,7 +9,7 @@ import (
 
 var csiHandlers = map[int]handlerFn{
 	'm':                    handleSgr,
-	'c':                    noop("Request primary device attributes"),
+	'c':                    printf("Request primary device attributes"),
 	'q' | '>'<<markerShift: handleXT,
 
 	// kitty
@@ -70,15 +70,15 @@ var dcsHandlers = map[int]handlerFn{
 }
 
 var escHandler = map[int]handlerFn{
-	'7': noop("Save cursor"),
-	'8': noop("Restore cursor"),
+	'7': printf("Save cursor"),
+	'8': printf("Restore cursor"),
 }
 
 var errUnknown = errors.New("unknown")
 
 type handlerFn = func(*ansi.Parser) (string, error)
 
-func noop(format string, v ...any) handlerFn {
+func printf(format string, v ...any) handlerFn {
 	return func(*ansi.Parser) (string, error) {
 		return fmt.Sprintf(format, v...), nil
 	}

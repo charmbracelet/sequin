@@ -1,0 +1,1 @@
+OSC "\x1b]2;hello\a": Set window title to hello

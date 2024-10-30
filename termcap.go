@@ -25,5 +25,5 @@ func handleTermcap(p *ansi.Parser) (string, error) {
 		caps = append(caps, string(capName))
 	}
 
-	return fmt.Sprintf("Request termcap entry for %q", strings.Join(caps, ", ")), nil
+	return fmt.Sprintf("Request termcap entry for %s", strings.Join(caps, ", ")), nil
 }

@@ -1,0 +1,1 @@
+CSI "\x1b[10;20r": Set scrolling region to top=10 bottom=20

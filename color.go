@@ -13,19 +13,24 @@ func handleTerminalColor(p *ansi.Parser) (string, error) {
 		return "", errUnknown
 	}
 
+	arg := string(parts[1])
+
 	var buf string
-	if string(parts[1]) == "?" {
+	if arg == "?" {
 		buf += "Request"
 	} else {
 		buf += "Set"
 	}
 	switch p.Cmd {
 	case 10:
-		buf += " foreground color to " + string(parts[1])
+		buf += " foreground color"
 	case 11:
-		buf += " background color to " + string(parts[1])
+		buf += " background color"
 	case 12:
-		buf += " cursor color to " + string(parts[1])
+		buf += " cursor color"
+	}
+	if arg == "?" {
+		buf += " to " + arg
 	}
 	return buf, nil
 }
