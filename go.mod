@@ -3,7 +3,7 @@ module github.com/charmbracelet/sequin
 go 1.22.8
 
 require (
-	github.com/charmbracelet/x/ansi v0.4.3-0.20241030151339-a49550dd4e50
+	github.com/charmbracelet/x/ansi v0.4.3
 	github.com/charmbracelet/x/exp/golden v0.0.0-20241029204245-3ef5e7b1ea37
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
