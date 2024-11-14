@@ -47,25 +47,26 @@ sequin <file
 	}
 }
 
-var (
-	kindStyle = lipgloss.NewStyle().
-			Background(lipgloss.Color("#C070D4")).
-			Padding(0, 1).
-			MaxWidth(5).
-			Width(5).
-			AlignHorizontal(lipgloss.Center).
-			Bold(true)
-	seqStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#04D7D7")).
-			Italic(true)
-	txtStyle = lipgloss.NewStyle().
-			Faint(true).
-			Italic(true)
-	errStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("204"))
-)
-
 func exec(w *colorprofile.Writer, in []byte) error {
+	hasDarkBG, err := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
+	if err != nil {
+		return err
+	}
+
+	lightDark := lipgloss.LightDark(hasDarkBG)
+
+	kindStyle := lipgloss.NewStyle().
+		Foreground(lightDark("", 0x864EFF)).
+		Width(4).
+		Align(lipgloss.Right).
+		Bold(true)
+	textKindStyle := kindStyle.SetString("Text")
+	seqStyle := lipgloss.NewStyle().
+		Foreground(lightDark("", 0x5D35B4))
+	textStyle := lipgloss.NewStyle().Foreground(lightDark("", 0xD9D9D9))
+	errStyle := lipgloss.NewStyle().
+		Foreground(lightDark("", 204))
+
 	seqPrint := func(kind string, seq []byte) {
 		s := seqStyle.Render(fmt.Sprintf("%q", seq))
 		_, _ = fmt.Fprintf(w, "%s %s: ", kindStyle.Render(kind), s)
@@ -75,7 +76,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 		if buf.Len() == 0 {
 			return
 		}
-		_, _ = fmt.Fprintf(w, "%s %s\n", kindStyle.Render("TXT"), txtStyle.Render(buf.String()))
+		_, _ = fmt.Fprintf(w, "%s %s\n", textKindStyle, textStyle.Render(buf.String()))
 		buf.Reset()
 	}
 
@@ -132,18 +133,17 @@ func exec(w *colorprofile.Writer, in []byte) error {
 
 			if len(seq) == 1 {
 				// just an ESC
-				seqPrint("ESC", seq)
 				_, _ = fmt.Fprintln(w, "Control code ESC")
 				break
 			}
 
-			seqPrint("ESC", seq)
+			seqPrint("Escape", seq)
 			handle(escHandler, p)
 
 		case width == 0 && len(seq) == 1:
 			flushPrint()
 			// control code
-			seqPrint("CTR", seq)
+			seqPrint("Ctrl", seq)
 			_, _ = fmt.Fprintln(w, ctrlCodes[seq[0]])
 
 		case width > 0:
