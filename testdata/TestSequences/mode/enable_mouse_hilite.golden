@@ -1,1 +1,1 @@
- CSI  \x1b[?1001h: Enable private mode "mouse hilite"
+ CSI  "\x1b[?1001h" " : Enable private mode "mouse hilite"

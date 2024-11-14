@@ -1,1 +1,1 @@
- OSC  \x1b]52;p;?\a: Request "primary" clipboard
+ OSC  "\x1b]52;p;?\a" " : Request "primary" clipboard

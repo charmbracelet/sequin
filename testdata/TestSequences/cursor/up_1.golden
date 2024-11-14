@@ -1,1 +1,1 @@
- CSI  \x1b[A: Cursor up 1
+ CSI  "\x1b[A" " : Cursor up 1

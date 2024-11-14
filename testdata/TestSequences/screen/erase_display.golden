@@ -1,1 +1,1 @@
- CSI  \x1b[3J: Erase entire display
+ CSI  "\x1b[3J" " : Erase entire display

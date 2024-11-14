@@ -1,1 +1,1 @@
- CSI  \x1b[?1h: Enable private mode "cursor keys"
+ CSI  "\x1b[?1h" " : Enable private mode "cursor keys"

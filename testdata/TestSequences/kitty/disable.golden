@@ -1,1 +1,1 @@
- CSI  \x1b[>0u: Disable Kitty keyboard
+ CSI  "\x1b[>0u" " : Disable Kitty keyboard

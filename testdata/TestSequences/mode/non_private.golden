@@ -1,1 +1,1 @@
- CSI  \x1b[25h: Enable mode "cursor visibility"
+ CSI  "\x1b[25h" " : Enable mode "cursor visibility"

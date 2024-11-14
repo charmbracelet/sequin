@@ -1,1 +1,1 @@
- CSI  \x1b[;;;1m: Reset style, Bold
+ CSI  "\x1b[;;;1m" " : Reset style, Bold
