@@ -66,7 +66,7 @@ func exec(cmd *cobra.Command, _ []string) error {
 	}
 
 	pseq := func(kind string, seq []byte) {
-		s := seqStyle.Render(fmt.Sprintf("%q", seq), `"`, "")
+		s := seqStyle.Render(fmt.Sprintf("%q", seq))
 		fmt.Fprintf(w, "%s %s: ", kindStyle.Render(kind), s)
 	}
 

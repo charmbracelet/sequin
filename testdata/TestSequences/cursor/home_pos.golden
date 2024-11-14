@@ -1,1 +1,1 @@
- CSI  "\x1b[H" " : Set cursor position row=1 col=1
+ CSI  "\x1b[H": Set cursor position row=1 col=1

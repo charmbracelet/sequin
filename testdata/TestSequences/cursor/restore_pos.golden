@@ -1,1 +1,1 @@
- CSI  "\x1b[u" " : Restore cursor position
+ CSI  "\x1b[u": Restore cursor position

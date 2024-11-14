@@ -1,1 +1,1 @@
- OSC  "\x1b]112\a" " : Reset cursor color
+ OSC  "\x1b]112\a": Reset cursor color

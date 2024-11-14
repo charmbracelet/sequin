@@ -1,1 +1,1 @@
- OSC  "\x1b]110\a" " : Reset foreground color
+ OSC  "\x1b]110\a": Reset foreground color

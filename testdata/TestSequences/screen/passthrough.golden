@@ -1,3 +1,3 @@
- DCS  "\x1bP" " : TODO: unhandled sequence
- ESC  "\x1b7" " : Save cursor
- ESC  "\x1b\\" " : TODO: unhandled sequence
+ DCS  "\x1bP": TODO: unhandled sequence
+ ESC  "\x1b7": Save cursor
+ ESC  "\x1b\\": TODO: unhandled sequence
