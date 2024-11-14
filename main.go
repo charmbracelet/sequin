@@ -36,7 +36,14 @@ func cmd() *cobra.Command {
 printf '\x1b[m' | sequin
 sequin <file
 	`,
-		RunE: exec,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			w := colorprofile.NewWriter(cmd.OutOrStdout(), os.Environ())
+			in, err := io.ReadAll(cmd.InOrStdin())
+			if err != nil {
+				return err
+			}
+			return exec(w, in)
+		},
 	}
 }
 
@@ -58,14 +65,8 @@ var (
 			Foreground(lipgloss.Color("204"))
 )
 
-func exec(cmd *cobra.Command, _ []string) error {
-	w := colorprofile.NewWriter(cmd.OutOrStdout(), os.Environ())
-	in, err := io.ReadAll(cmd.InOrStdin())
-	if err != nil {
-		return err
-	}
-
-	pseq := func(kind string, seq []byte) {
+func exec(w *colorprofile.Writer, in []byte) error {
+	seqPrint := func(kind string, seq []byte) {
 		s := seqStyle.Render(fmt.Sprintf("%q", seq))
 		fmt.Fprintf(w, "%s %s: ", kindStyle.Render(kind), s)
 	}
@@ -102,22 +103,22 @@ func exec(cmd *cobra.Command, _ []string) error {
 		switch {
 		case ansi.HasCsiPrefix(seq):
 			flushPrint()
-			pseq("CSI", seq)
+			seqPrint("CSI", seq)
 			handle(csiHandlers, p)
 
 		case ansi.HasDcsPrefix(seq):
 			flushPrint()
-			pseq("DCS", seq)
+			seqPrint("DCS", seq)
 			handle(dcsHandlers, p)
 
 		case ansi.HasOscPrefix(seq):
 			flushPrint()
-			pseq("OSC", seq)
+			seqPrint("OSC", seq)
 			handle(oscHandlers, p)
 
 		case ansi.HasApcPrefix(seq):
 			flushPrint()
-			pseq("APC", seq)
+			seqPrint("APC", seq)
 
 			switch {
 			case ansi.HasPrefix(p.Data, []byte("G")):
@@ -131,18 +132,18 @@ func exec(cmd *cobra.Command, _ []string) error {
 
 			if len(seq) == 1 {
 				// just an ESC
-				pseq("ESC", seq)
+				seqPrint("ESC", seq)
 				fmt.Fprintln(w, "Control code ESC")
 				break
 			}
 
-			pseq("ESC", seq)
+			seqPrint("ESC", seq)
 			handle(escHandler, p)
 
 		case width == 0 && len(seq) == 1:
 			flushPrint()
 			// control code
-			pseq("CTR", seq)
+			seqPrint("CTR", seq)
 			fmt.Fprintln(w, ctrlCodes[seq[0]])
 
 		case width > 0:
