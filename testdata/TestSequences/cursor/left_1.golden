@@ -1,1 +1,1 @@
-CSI "\x1b[D": Cursor left 1
+ CSI  \x1b[D: Cursor left 1

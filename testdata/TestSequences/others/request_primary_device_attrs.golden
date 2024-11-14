@@ -1,1 +1,1 @@
-CSI "\x1b[c": Request primary device attributes
+ CSI  \x1b[c: Request primary device attributes

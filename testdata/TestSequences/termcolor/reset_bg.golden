@@ -1,1 +1,1 @@
-OSC "\x1b]111\a": Reset background color
+ OSC  \x1b]111\a: Reset background color

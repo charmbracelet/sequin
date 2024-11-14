@@ -1,1 +1,1 @@
-CSI "\x1b[?7n": invalid sequence
+ CSI  \x1b[?7n: invalid sequence

@@ -1,1 +1,1 @@
-CSI "\x1b[?1$p": Request private mode "cursor keys"
+ CSI  \x1b[?1$p: Request private mode "cursor keys"

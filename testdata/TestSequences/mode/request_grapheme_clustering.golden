@@ -1,1 +1,1 @@
-CSI "\x1b[?2027$p": Request private mode "grapheme clustering"
+ CSI  \x1b[?2027$p: Request private mode "grapheme clustering"

@@ -32,8 +32,8 @@ var csiHandlers = map[int]handlerFn{
 	'q' | ' '<<intermedShift: handleCursor,
 
 	// screen
-	'J': handleScreen,
 	'r': handleScreen,
+	'J': handleScreen,
 	'K': handleLine,
 	'L': handleLine,
 	'M': handleLine,

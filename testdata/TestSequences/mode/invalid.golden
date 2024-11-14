@@ -1,1 +1,1 @@
-CSI "\x1b[?27h": Enable private mode "unknown"
+ CSI  \x1b[?27h: Enable private mode "unknown"
