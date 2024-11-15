@@ -63,25 +63,25 @@ func exec(w *colorprofile.Writer, in []byte) error {
 		Bold(true).
 		MarginRight(1)
 	seqStyle := lipgloss.NewStyle().
-		Foreground(lightDark("", 0x978692)) //nolint:mnd
+		Foreground(lightDark(0x917F8B, 0x978692)) //nolint:mnd
 	separator := lipgloss.NewStyle().
 		Foreground(lightDark("", 0x978692)).
 		SetString(": ")
 	textStyle := lipgloss.NewStyle().
-		Foreground(lightDark("", 0xD9D9D9)) //nolint:mnd
+		Foreground(lightDark(0xD9D9D9, 0xD9D9D9)) //nolint:mnd
 	errStyle := lipgloss.NewStyle().
-		Foreground(lightDark("", 0xff5f87)) //nolint:mnd
+		Foreground(lightDark(0xEC6A88, 0xff5f87)) //nolint:mnd
 	explanationStyle := lipgloss.NewStyle().
-		Foreground(lightDark("", 0xD4CAD1)) //nolint:mnd
+		Foreground(lightDark(0x3C343A, 0xD4CAD1)) //nolint:mnd
 
 	kindColors := map[string]color.Color{
-		"CSI":  lightDark("", 0x8D58FF),       //nolint:mnd
-		"DCS":  lightDark("", 0xCEE88A),       //nolint:mnd
-		"OSC":  lightDark("", 0x1CD4F7),       //nolint:mnd
-		"APC":  lightDark("", 0xFF8383),       //nolint:mnd
-		"ESC":  lightDark("", 0xE46FDD),       //nolint:mnd
-		"Ctrl": lightDark(0x564B53, 0x4BD2A3), //nolint:mnd
-		"Text": lightDark(0x564B53, 0x6C6068), //nolint:mnd
+		"CSI":  lightDark(0x936EE5, 0x8D58FF), //nolint:mnd
+		"DCS":  lightDark(0x86C867, 0xCEE88A), //nolint:mnd
+		"OSC":  lightDark(0x43C7E0, 0x1CD4F7), //nolint:mnd
+		"APC":  lightDark(0xF58855, 0xFF8383), //nolint:mnd
+		"ESC":  lightDark(0xE46FDD, 0xE46FDD), //nolint:mnd
+		"Ctrl": lightDark(0x4DBA94, 0x4BD2A3), //nolint:mnd
+		"Text": lightDark(0x978692, 0x6C6068), //nolint:mnd
 	}
 
 	kindStyle := func(kind string) lipgloss.Style {
