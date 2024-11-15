@@ -6,6 +6,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+//nolint:mnd
 func handleTerminalColor(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 2 {
@@ -35,6 +36,7 @@ func handleTerminalColor(p *ansi.Parser) (string, error) {
 	return buf, nil
 }
 
+//nolint:mnd
 func handleResetTerminalColor(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 1 {

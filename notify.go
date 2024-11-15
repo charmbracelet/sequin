@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+//nolint:mnd
 func handleNotify(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 	if len(parts) != 2 {

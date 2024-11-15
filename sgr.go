@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+//nolint:mnd
 func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 	if parser.ParamsLen == 0 {
 		return "Reset style", nil
@@ -111,6 +112,7 @@ var basicColors = map[int]string{
 	7: "White",
 }
 
+//nolint:mnd
 func readColor(idxp *int, params []int) (c ansi.Color) {
 	i := *idxp
 	paramsLen := len(params)

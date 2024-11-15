@@ -6,6 +6,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+//nolint:mnd
 func handleCursor(p *ansi.Parser) (string, error) {
 	var count int
 	if p.ParamsLen > 0 {
@@ -56,6 +57,7 @@ func handleCursor(p *ansi.Parser) (string, error) {
 	return "", errUnhandled
 }
 
+//nolint:mnd
 func descCursorStyle(i int) string {
 	switch i {
 	case 0, 1:

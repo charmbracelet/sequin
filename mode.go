@@ -25,6 +25,7 @@ func handleMode(parser *ansi.Parser) (string, error) {
 	return "", errUnhandled
 }
 
+//nolint:mnd
 func modeDesc(mode int) string {
 	switch mode {
 	case 1:

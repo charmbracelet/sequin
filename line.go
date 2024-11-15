@@ -6,6 +6,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+//nolint:mnd
 func handleLine(parser *ansi.Parser) (string, error) {
 	var count int
 	if parser.ParamsLen > 0 {

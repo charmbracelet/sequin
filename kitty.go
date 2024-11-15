@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+//nolint:mnd
 func handleKitty(parser *ansi.Parser) (string, error) {
 	flagDesc := func(flag int) string {
 		var r []string

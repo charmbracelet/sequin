@@ -42,6 +42,7 @@ sequin <file
 			w := colorprofile.NewWriter(cmd.OutOrStdout(), os.Environ())
 			in, err := io.ReadAll(cmd.InOrStdin())
 			if err != nil {
+				//nolint:wrapcheck
 				return err
 			}
 			return exec(w, in)
@@ -49,6 +50,25 @@ sequin <file
 	}
 }
 
+var (
+	kindStyle = lipgloss.NewStyle().
+			Background(lipgloss.Color("#C070D4")).
+			Padding(0, 1).
+			MaxWidth(5).
+			Width(5).
+			AlignHorizontal(lipgloss.Center).
+			Bold(true)
+	seqStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#04D7D7")).
+			Italic(true)
+	txtStyle = lipgloss.NewStyle().
+			Faint(true).
+			Italic(true)
+	errStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("204"))
+)
+
+//nolint:mnd
 func exec(w *colorprofile.Writer, in []byte) error {
 	hasDarkBG, err := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
 	if err != nil {
