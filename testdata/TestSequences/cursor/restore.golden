@@ -1,1 +1,1 @@
- ESC \x1b8: Restore cursor
+ ESC 8: Restore cursor

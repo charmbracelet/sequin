@@ -1,1 +1,1 @@
- OSC \x1b]12;#000080\a: Set cursor color
+ OSC 12;#000080: Set cursor color

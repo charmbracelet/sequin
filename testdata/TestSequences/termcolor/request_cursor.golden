@@ -1,1 +1,1 @@
- OSC \x1b]12;?\a: Request cursor color to ?
+ OSC 12;?: Request cursor color to ?

@@ -1,1 +1,1 @@
- OSC \x1b]52;p;aGVsbG8\a: illegal base64 data at input byte 4
+ OSC 52;p;aGVsbG8: illegal base64 data at input byte 4

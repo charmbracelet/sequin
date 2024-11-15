@@ -1,1 +1,1 @@
- OSC \x1b]9;notification body\a: Notify "notification body"
+ OSC 9;notification body: Notify "notification body"

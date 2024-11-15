@@ -1,1 +1,1 @@
- OSC \x1b]52;p;aGVsbG8=\a: Set clipboard "primary" to "hello"
+ OSC 52;p;aGVsbG8=: Set clipboard "primary" to "hello"

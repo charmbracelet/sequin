@@ -1,1 +1,1 @@
- OSC \x1b]111;1\a: invalid sequence
+ OSC 111;1: invalid sequence
