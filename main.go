@@ -50,11 +50,7 @@ sequin <file
 }
 
 func exec(w *colorprofile.Writer, in []byte) error {
-	hasDarkBG, err := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
-	if err != nil {
-		return err
-	}
-
+	hasDarkBG, _ := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
 	lightDark := lipgloss.LightDark(hasDarkBG)
 
 	rawKindStyle := lipgloss.NewStyle().
