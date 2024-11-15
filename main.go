@@ -60,22 +60,28 @@ func exec(w *colorprofile.Writer, in []byte) error {
 	rawKindStyle := lipgloss.NewStyle().
 		Width(4). //nolint:mnd
 		Align(lipgloss.Right).
-		Bold(true)
+		Bold(true).
+		MarginRight(1)
 	seqStyle := lipgloss.NewStyle().
-		Foreground(lightDark("", 0x864EFF)) //nolint:mnd
+		Foreground(lightDark("", 0x978692)) //nolint:mnd
+	separator := lipgloss.NewStyle().
+		Foreground(lightDark("", 0x978692)).
+		SetString(": ")
 	textStyle := lipgloss.NewStyle().
 		Foreground(lightDark("", 0xD9D9D9)) //nolint:mnd
 	errStyle := lipgloss.NewStyle().
-		Foreground(lightDark("", 204)) //nolint:mnd
+		Foreground(lightDark("", 0xff5f87)) //nolint:mnd
+	explanationStyle := lipgloss.NewStyle().
+		Foreground(lightDark("", 0xD4CAD1)) //nolint:mnd
 
 	kindColors := map[string]color.Color{
-		"CSI":  lightDark("", 0x5D35B4), //nolint:mnd
-		"DCS":  lightDark("", 0x5D35B4), //nolint:mnd
-		"OSC":  lightDark("", 0x5D35B4), //nolint:mnd
-		"APC":  lightDark("", 0x5D35B4), //nolint:mnd
-		"ESC":  lightDark("", 0x5D35B4), //nolint:mnd
-		"Ctrl": lightDark("", 0x5D35B4), //nolint:mnd
-		"Text": lightDark("", 0x5D35B4), //nolint:mnd
+		"CSI":  lightDark("", 0x8D58FF),       //nolint:mnd
+		"DCS":  lightDark("", 0xCEE88A),       //nolint:mnd
+		"OSC":  lightDark("", 0x1CD4F7),       //nolint:mnd
+		"APC":  lightDark("", 0xFF8383),       //nolint:mnd
+		"ESC":  lightDark("", 0xE46FDD),       //nolint:mnd
+		"Ctrl": lightDark(0x564B53, 0x4BD2A3), //nolint:mnd
+		"Text": lightDark(0x564B53, 0x6C6068), //nolint:mnd
 	}
 
 	kindStyle := func(kind string) lipgloss.Style {
@@ -92,9 +98,10 @@ func exec(w *colorprofile.Writer, in []byte) error {
 		).Replace(s)
 		_, _ = fmt.Fprintf(
 			w,
-			"%s %s: ",
+			"%s%s%s",
 			kindStyle(kind).Render(kind),
 			seqStyle.Render(s),
+			separator,
 		)
 	}
 
@@ -102,7 +109,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 		if buf.Len() == 0 {
 			return
 		}
-		_, _ = fmt.Fprintf(w, "%s %s\n", textKindStyle, textStyle.Render(buf.String()))
+		_, _ = fmt.Fprintf(w, "%s%s\n", textKindStyle, textStyle.Render(buf.String()))
 		buf.Reset()
 	}
 
@@ -117,7 +124,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 			_, _ = fmt.Fprintln(w, errStyle.Render(err.Error()))
 			return
 		}
-		_, _ = fmt.Fprintln(w, out)
+		_, _ = fmt.Fprintln(w, explanationStyle.Render(out))
 	}
 
 	var state byte
@@ -159,22 +166,29 @@ func exec(w *colorprofile.Writer, in []byte) error {
 
 			if len(seq) == 1 {
 				// just an ESC
-				_, _ = fmt.Fprintln(w, "Control code ESC")
+				_, _ = fmt.Fprintf(
+					w,
+					"%s%s%s%s\n",
+					kindStyle("Ctrl").SetString("Ctrl"),
+					seqStyle.Render("ESC"),
+					separator,
+					explanationStyle.Render("Escape"),
+				)
 				break
 			}
 
-			seqPrint("Escape", seq)
+			seqPrint("ESC", seq)
 			handle(escHandler, p)
 
 		case width == 0 && len(seq) == 1:
 			flushPrint()
 			// control code
 			seqPrint("Ctrl", seq)
-			_, _ = fmt.Fprintln(w, ctrlCodes[seq[0]])
+			_, _ = fmt.Fprintln(w, explanationStyle.Render(ctrlCodes[seq[0]]))
 
 		case width > 0:
 			// Text
-			buf.Write(seq)
+			buf.WriteString(explanationStyle.Render(string(seq)))
 
 		default:
 			flushPrint()
