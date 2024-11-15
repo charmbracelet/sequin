@@ -20,7 +20,10 @@ const (
 	intermedShift = parser.IntermedShift
 )
 
-var buf bytes.Buffer
+var (
+	buf bytes.Buffer
+	raw bool
+)
 
 func main() {
 	if err := cmd().Execute(); err != nil {
@@ -30,7 +33,7 @@ func main() {
 }
 
 func cmd() *cobra.Command {
-	return &cobra.Command{
+	root := &cobra.Command{
 		Use:   "sequin",
 		Short: "Human-readable ANSI sequences",
 		Args:  cobra.NoArgs,
@@ -48,6 +51,8 @@ sequin <file
 			return exec(w, in)
 		},
 	}
+	root.Flags().BoolVarP(&raw, "raw", "r", false, "raw mode (no explanation)")
+	return root
 }
 
 //nolint:mnd
@@ -55,6 +60,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 	hasDarkBG := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
 	lightDark := lipgloss.LightDark(hasDarkBG)
 
+	rawModeStyle := lipgloss.NewStyle()
 	rawKindStyle := lipgloss.NewStyle().
 		Width(4).
 		Align(lipgloss.Right).
@@ -83,6 +89,9 @@ func exec(w *colorprofile.Writer, in []byte) error {
 	}
 
 	kindStyle := func(kind string) lipgloss.Style {
+		if raw {
+			return rawModeStyle.Foreground(kindColors[kind])
+		}
 		return rawKindStyle.Foreground(kindColors[kind])
 	}
 
@@ -122,17 +131,33 @@ func exec(w *colorprofile.Writer, in []byte) error {
 			seqStyle.Render(s),
 			separator,
 		)
+
+		switch kind {
+		case "Ctrl":
+			_, _ = fmt.Fprintln(w, explanationStyle.Render(ctrlCodes[seq[0]]))
+		case "":
+			_, _ = fmt.Fprintf(w, "Unknown %q\n", seq)
+		}
 	}
 
 	flushPrint := func() {
 		if buf.Len() == 0 {
 			return
 		}
-		_, _ = fmt.Fprintf(w, "%s%s\n", textKindStyle, textStyle.Render(buf.String()))
+		if raw {
+			_, _ = fmt.Fprint(w, kindStyle("Text").Render(buf.String()))
+		} else {
+			_, _ = fmt.Fprintf(w, "%s%s\n", textKindStyle, textStyle.Render(buf.String()))
+		}
+
 		buf.Reset()
 	}
 
 	handle := func(reg map[int]handlerFn, p *ansi.Parser) {
+		if raw {
+			return
+		}
+
 		handler, ok := reg[p.Cmd]
 		if !ok {
 			_, _ = fmt.Fprintln(w, errStyle.Render(errUnhandled.Error()))
@@ -203,7 +228,6 @@ func exec(w *colorprofile.Writer, in []byte) error {
 			flushPrint()
 			// control code
 			seqPrint("Ctrl", seq)
-			_, _ = fmt.Fprintln(w, explanationStyle.Render(ctrlCodes[seq[0]]))
 
 		case width > 0:
 			// Text
@@ -211,7 +235,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 
 		default:
 			flushPrint()
-			_, _ = fmt.Fprintf(w, "Unknown %q\n", seq)
+			seqPrint("", seq)
 		}
 
 		in = in[n:]
