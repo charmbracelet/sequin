@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"image/color"
 	"io"
 	"os"
 	"strings"
@@ -56,17 +57,31 @@ func exec(w *colorprofile.Writer, in []byte) error {
 
 	lightDark := lipgloss.LightDark(hasDarkBG)
 
-	kindStyle := lipgloss.NewStyle().
-		Foreground(lightDark("", 0x5D35B4)).
+	rawKindStyle := lipgloss.NewStyle().
 		Width(4).
 		Align(lipgloss.Right).
 		Bold(true)
-	textKindStyle := kindStyle.SetString("Text")
 	seqStyle := lipgloss.NewStyle().
 		Foreground(lightDark("", 0x864EFF))
 	textStyle := lipgloss.NewStyle().Foreground(lightDark("", 0xD9D9D9))
 	errStyle := lipgloss.NewStyle().
 		Foreground(lightDark("", 204))
+
+	kindColors := map[string]color.Color{
+		"CSI":  lightDark("", 0x5D35B4),
+		"DCS":  lightDark("", 0x5D35B4),
+		"OSC":  lightDark("", 0x5D35B4),
+		"APC":  lightDark("", 0x5D35B4),
+		"ESC":  lightDark("", 0x5D35B4),
+		"Ctrl": lightDark("", 0x5D35B4),
+		"Text": lightDark("", 0x5D35B4),
+	}
+
+	kindStyle := func(kind string) lipgloss.Style {
+		return rawKindStyle.Foreground(kindColors[kind])
+	}
+
+	textKindStyle := kindStyle("Text").SetString("Text")
 
 	seqPrint := func(kind string, seq []byte) {
 		s := fmt.Sprintf("%q", seq)
@@ -77,7 +92,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 		_, _ = fmt.Fprintf(
 			w,
 			"%s %s: ",
-			kindStyle.Render(kind),
+			kindStyle(kind).Render(kind),
 			seqStyle.Render(s),
 		)
 	}
