@@ -42,7 +42,7 @@ sequin <file
 			w := colorprofile.NewWriter(cmd.OutOrStdout(), os.Environ())
 			in, err := io.ReadAll(cmd.InOrStdin())
 			if err != nil {
-				return fmt.Errorf("could not read input: %w", err)
+				return err
 			}
 			return exec(w, in)
 		},
@@ -52,13 +52,13 @@ sequin <file
 func exec(w *colorprofile.Writer, in []byte) error {
 	hasDarkBG, err := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
 	if err != nil {
-		return fmt.Errorf("could not detect background color: %w", err)
+		return err
 	}
 
 	lightDark := lipgloss.LightDark(hasDarkBG)
 
 	rawKindStyle := lipgloss.NewStyle().
-		Width(4). //nolint:mnd
+		Width(4).
 		Align(lipgloss.Right).
 		Bold(true).
 		MarginRight(1)

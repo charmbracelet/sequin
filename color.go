@@ -8,7 +8,7 @@ import (
 
 func handleTerminalColor(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
-	if len(parts) != 2 { //nolint:mnd
+	if len(parts) != 2 {
 		// Invalid, ignore
 		return "", errInvalid
 	}
@@ -21,7 +21,6 @@ func handleTerminalColor(p *ansi.Parser) (string, error) {
 	} else {
 		buf += "Set"
 	}
-	//nolint:mnd
 	switch p.Cmd {
 	case 10:
 		buf += " foreground color"
@@ -43,7 +42,6 @@ func handleResetTerminalColor(p *ansi.Parser) (string, error) {
 		return "", errInvalid
 	}
 	var buf string
-	//nolint:mnd
 	switch p.Cmd {
 	case 110:
 		buf += "Reset foreground color"

@@ -9,7 +9,7 @@ import (
 
 func handleNotify(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
-	if len(parts) != 2 { //nolint:mnd
+	if len(parts) != 2 {
 		// Invalid, ignore
 		return "", errInvalid
 	}

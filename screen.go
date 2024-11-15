@@ -15,7 +15,6 @@ func handleScreen(parser *ansi.Parser) (string, error) {
 	cmd := ansi.Cmd(parser.Cmd)
 	switch cmd.Command() {
 	case 'J':
-		//nolint:mnd
 		switch count {
 		case 0:
 			return "Erase screen bellow", nil

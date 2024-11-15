@@ -39,7 +39,7 @@ func handleCursor(p *ansi.Parser) (string, error) {
 		}
 		return fmt.Sprintf("Set cursor position row=%[1]d col=%[2]d", row, col), nil
 	case 'n':
-		if count != 6 { //nolint:mnd
+		if count != 6 {
 			return "", errInvalid
 		}
 		if isPrivate {
@@ -57,7 +57,6 @@ func handleCursor(p *ansi.Parser) (string, error) {
 }
 
 func descCursorStyle(i int) string {
-	//nolint:mnd
 	switch i {
 	case 0, 1:
 		return "Blinking block"

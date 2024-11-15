@@ -28,7 +28,6 @@ func handleKitty(parser *ansi.Parser) (string, error) {
 		return strings.Join(r, ", ")
 	}
 	modeDesc := func(mode int) string {
-		//nolint:mnd
 		switch mode {
 		case 1:
 			return "Set given flags and unset all others"

@@ -15,7 +15,6 @@ func handleLine(parser *ansi.Parser) (string, error) {
 	cmd := ansi.Cmd(parser.Cmd)
 	switch cmd.Command() {
 	case 'K':
-		//nolint:mnd
 		switch count {
 		case 0:
 			return "Erase line right", nil
