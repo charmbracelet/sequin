@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/charmbracelet/colorprofile"
 	"github.com/charmbracelet/lipgloss/v2"
@@ -56,20 +57,29 @@ func exec(w *colorprofile.Writer, in []byte) error {
 	lightDark := lipgloss.LightDark(hasDarkBG)
 
 	kindStyle := lipgloss.NewStyle().
-		Foreground(lightDark("", 0x864EFF)).
+		Foreground(lightDark("", 0x5D35B4)).
 		Width(4).
 		Align(lipgloss.Right).
 		Bold(true)
 	textKindStyle := kindStyle.SetString("Text")
 	seqStyle := lipgloss.NewStyle().
-		Foreground(lightDark("", 0x5D35B4))
+		Foreground(lightDark("", 0x864EFF))
 	textStyle := lipgloss.NewStyle().Foreground(lightDark("", 0xD9D9D9))
 	errStyle := lipgloss.NewStyle().
 		Foreground(lightDark("", 204))
 
 	seqPrint := func(kind string, seq []byte) {
-		s := seqStyle.Render(fmt.Sprintf("%q", seq))
-		_, _ = fmt.Fprintf(w, "%s %s: ", kindStyle.Render(kind), s)
+		s := fmt.Sprintf("%q", seq)
+		s = strings.NewReplacer(
+			"\\x1b[", "",
+			`"`, "",
+		).Replace(s)
+		_, _ = fmt.Fprintf(
+			w,
+			"%s %s: ",
+			kindStyle.Render(kind),
+			seqStyle.Render(s),
+		)
 	}
 
 	flushPrint := func() {
