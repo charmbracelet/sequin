@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image/color"
 	"io"
+	"log"
 	"os"
 	"strings"
 
@@ -90,10 +91,32 @@ func exec(w *colorprofile.Writer, in []byte) error {
 
 	seqPrint := func(kind string, seq []byte) {
 		s := fmt.Sprintf("%q", seq)
-		s = strings.NewReplacer(
-			"\\x1b[", "",
-			`"`, "",
-		).Replace(s)
+		log.Printf("seq: %s", s)
+		s = strings.TrimPrefix(s, `"`)
+		s = strings.TrimSuffix(s, `"`)
+
+		// Trim introducers and terminators
+		// CSI
+		s = strings.TrimPrefix(s, "\\x9b")
+		s = strings.TrimPrefix(s, "\\x1b[")
+		// DCS
+		s = strings.TrimPrefix(s, "\\x90")
+		s = strings.TrimPrefix(s, "\\x1bP")
+		// OSC
+		s = strings.TrimPrefix(s, "\\x9d")
+		s = strings.TrimPrefix(s, "\\x1b]")
+		s = strings.TrimSuffix(s, "\\a")
+		// APC
+		s = strings.TrimPrefix(s, "\\x9f")
+		s = strings.TrimPrefix(s, "\\x1b_")
+		// ESC
+		if !bytes.Equal(seq, []byte{ansi.ESC}) {
+			s = strings.TrimPrefix(s, "\\x1b")
+		}
+		// ST
+		s = strings.TrimSuffix(s, "\\x9c")
+		s = strings.TrimSuffix(s, "\\x1b\\\\")
+
 		_, _ = fmt.Fprintf(
 			w,
 			"%s%s%s",
