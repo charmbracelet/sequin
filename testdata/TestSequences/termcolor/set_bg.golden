@@ -1,1 +1,1 @@
- OSC \x1b]11;#000000\a: Set background color
+ OSC 11;#000000: Set background color

@@ -1,1 +1,1 @@
- OSC \x1b]111\a: Reset background color
+ OSC 111: Reset background color

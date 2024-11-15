@@ -1,1 +1,1 @@
- OSC \x1b]1;terminal\a: Set icon name to terminal
+ OSC 1;terminal: Set icon name to terminal

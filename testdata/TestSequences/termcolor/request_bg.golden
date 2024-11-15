@@ -1,1 +1,1 @@
- OSC \x1b]11;?\a: Request background color to ?
+ OSC 11;?: Request background color to ?

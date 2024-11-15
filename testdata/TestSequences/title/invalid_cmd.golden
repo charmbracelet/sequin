@@ -1,1 +1,1 @@
- OSC \x1b]5;hello\a: TODO: unhandled sequence
+ OSC 5;hello: TODO: unhandled sequence

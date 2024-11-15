@@ -1,1 +1,1 @@
- OSC \x1b]22;crosshair\a: Set pointer shape to "crosshair"
+ OSC 22;crosshair: Set pointer shape to "crosshair"
