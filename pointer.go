@@ -9,7 +9,7 @@ import (
 
 func handlePointerShape(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
-	if len(parts) != 2 {
+	if len(parts) != 2 { //nolint:mnd
 		// Invalid, ignore
 		return "", errInvalid
 	}

@@ -26,6 +26,7 @@ func handleMode(parser *ansi.Parser) (string, error) {
 }
 
 func modeDesc(mode int) string {
+	//nolint:mnd
 	switch mode {
 	case 1:
 		return "cursor keys"

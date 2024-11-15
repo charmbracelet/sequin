@@ -16,11 +16,11 @@ func handleTermcap(p *ansi.Parser) (string, error) {
 
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
 
-	var caps []string
+	caps := make([]string, 0, len(parts))
 	for _, part := range parts {
 		capName, err := hex.DecodeString(string(part))
 		if err != nil {
-			return "", err
+			return "", fmt.Errorf("could not decode string: %w", err)
 		}
 		caps = append(caps, string(capName))
 	}

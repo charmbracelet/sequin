@@ -15,7 +15,7 @@ var clipboardName = map[string]string{
 
 func handleClipboard(p *ansi.Parser) (string, error) {
 	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
-	if len(parts) != 3 {
+	if len(parts) != 3 { //nolint:mnd
 		// Invalid, ignore
 		return "", errInvalid
 	}
@@ -27,7 +27,7 @@ func handleClipboard(p *ansi.Parser) (string, error) {
 	b64, err := base64.StdEncoding.DecodeString(string(parts[2]))
 	if err != nil {
 		// Invalid, ignore
-		return "", err
+		return "", fmt.Errorf("could not decode from base64: %w", err)
 	}
 
 	return fmt.Sprintf("Set clipboard %q to %q", clipboardName[string(parts[1])], b64), nil

@@ -22,6 +22,7 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 		comma = true
 
 		// TODO: add more parameters and options
+		//nolint:mnd
 		switch param.Param() {
 		case -1:
 			// SGR default value is zero. -1 means missing parameter which is
@@ -119,7 +120,8 @@ func readColor(idxp *int, params []int) (c ansi.Color) {
 	}
 	// Note: we accept both main and subparams here
 	switch param := ansi.Param(params[i+1]); param.Param() {
-	case 2: // RGB
+	case 2: //nolint:mnd
+		// RGB
 		if i > paramsLen-4 {
 			return
 		}
@@ -127,10 +129,11 @@ func readColor(idxp *int, params []int) (c ansi.Color) {
 			R: uint8(ansi.Param(params[i+2]).Param()), //nolint:gosec
 			G: uint8(ansi.Param(params[i+3]).Param()), //nolint:gosec
 			B: uint8(ansi.Param(params[i+4]).Param()), //nolint:gosec
-			A: 0xff,
+			A: 0xff,                                   //nolint:mnd
 		}
 		*idxp += 4
-	case 5: // 256 colors
+	case 5: //nolint:mnd
+		// 256 colors
 		if i > paramsLen-2 {
 			return
 		}
