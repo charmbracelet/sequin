@@ -80,7 +80,7 @@ visually see what's going on.
 git -c status.color=always status -sb | sequin -r && echo
 ```
 
-<p><img src="https://github.com/user-attachments/assets/2f812aa8-ba40-435f-858d-60f5082c7fad" width="450"></p>
+<p><img src="https://github.com/user-attachments/assets/c3b19a81-934e-4b87-b86d-2aa2a25b8c5d" width="450"></p>
 
 ## How it works
 
