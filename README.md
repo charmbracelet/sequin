@@ -69,7 +69,7 @@ $ cat ./testdata/MyCuteApp.golden | sequin
 
 To generate golden files for your TUIs have a look at [`golden`][golden] and [`teatest`][teatest] from the [`/x`][x] project.
 
-### Visualizing raw sequences
+## Bonus: Syntax Highlighting for Raw Sequences
 
 One of the paint points that we find when working with ANSI escape sequences is
 that they are just a bunch of "special" characters and text. Sometimes instead
