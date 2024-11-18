@@ -80,6 +80,8 @@ visually see what's going on.
 git -c status.color=always status -sb | sequin -r && echo
 ```
 
+<p><img src="https://github.com/user-attachments/assets/2f812aa8-ba40-435f-858d-60f5082c7fad" width="930"></p>
+
 ## How it works
 
 It relies heavily on our glorious [`ansi`][ansi] package, currently in the
