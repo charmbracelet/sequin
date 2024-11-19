@@ -36,19 +36,26 @@ func cmd() *cobra.Command {
 	root := &cobra.Command{
 		Use:   "sequin",
 		Short: "Human-readable ANSI sequences",
-		Args:  cobra.NoArgs,
+		Args:  cobra.ArbitraryArgs,
 		Example: `
 printf '\x1b[m' | sequin
 sequin <file
+sequin -- some command to execute
 	`,
-		RunE: func(cmd *cobra.Command, _ []string) error {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			w := colorprofile.NewWriter(cmd.OutOrStdout(), os.Environ())
-			in, err := io.ReadAll(cmd.InOrStdin())
+			var in []byte
+			var err error
+			if len(args) == 0 {
+				in, err = io.ReadAll(cmd.InOrStdin())
+			} else {
+				in, err = executeCommand(cmd.Context(), args)
+			}
 			if err != nil {
 				//nolint:wrapcheck
 				return err
 			}
-			return exec(w, in)
+			return process(w, in)
 		},
 	}
 	root.Flags().BoolVarP(&raw, "raw", "r", false, "raw mode (no explanation)")
@@ -56,7 +63,7 @@ sequin <file
 }
 
 //nolint:mnd
-func exec(w *colorprofile.Writer, in []byte) error {
+func process(w *colorprofile.Writer, in []byte) error {
 	hasDarkBG := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
 	lightDark := func(light, dark string) color.Color {
 		return lipgloss.LightDark(hasDarkBG)(lipgloss.Color(light), lipgloss.Color(dark))

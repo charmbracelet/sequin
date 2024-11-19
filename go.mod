@@ -7,6 +7,7 @@ require (
 	github.com/charmbracelet/lipgloss/v2 v2.0.0-alpha.2.0.20241119154431-6bbc36c3d376
 	github.com/charmbracelet/x/ansi v0.4.6-0.20241113152101-0af7d04e9f32
 	github.com/charmbracelet/x/exp/golden v0.0.0-20241029204245-3ef5e7b1ea37
+	github.com/creack/pty v1.1.24
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
 )
