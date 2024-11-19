@@ -66,7 +66,7 @@ Or, download it:
 - [Packages][releases] are available in Debian and RPM formats
 - [Binaries][releases] are available for Linux, macOS, Windows, FreeBSD, OpenBSD, and NetBSD
 
-[releases]: https://github.com/charmbracelet/mods/releases
+[releases]: https://github.com/charmbracelet/sequin/releases
 
 Or, just install it with `go`:
 
