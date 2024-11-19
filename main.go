@@ -2,14 +2,26 @@ package main
 
 import (
 	"bytes"
+	"context"
+	"errors"
 	"fmt"
 	"image/color"
 	"io"
+	"net"
 	"os"
+	"os/signal"
+	"path/filepath"
 	"strings"
+	"syscall"
+	"time"
 
+	"github.com/caarlos0/sync/cio"
 	"github.com/charmbracelet/colorprofile"
 	"github.com/charmbracelet/lipgloss/v2"
+	"github.com/charmbracelet/log"
+	"github.com/charmbracelet/ssh"
+	"github.com/charmbracelet/wish"
+	"github.com/charmbracelet/wish/logging"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/ansi/parser"
 	"github.com/spf13/cobra"
@@ -18,6 +30,8 @@ import (
 const (
 	markerShift   = parser.MarkerShift
 	intermedShift = parser.IntermedShift
+	host          = "localhost"
+	port          = "23235"
 )
 
 var (
@@ -26,13 +40,68 @@ var (
 )
 
 func main() {
-	if err := cmd().Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	if filepath.Base(os.Args[0]) == "sequin-server" {
+		startServer()
+	} else {
+		w := colorprofile.NewWriter(os.Stdout, os.Environ())
+		if err := cmd(w).Execute(); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 	}
 }
 
-func cmd() *cobra.Command {
+func startServer() {
+	s, err := wish.NewServer(
+		wish.WithAddress(net.JoinHostPort(host, port)),
+		wish.WithHostKeyPath(".ssh/id_ed25519"),
+		wish.WithMiddleware(
+			func(next ssh.Handler) ssh.Handler {
+				return func(sess ssh.Session) {
+					// Here we wire our command's args and IO to the user
+					// session's
+					w := colorprofile.NewWriter(sess, append(sess.Environ(), "CLICOLOR_FORCE=1"))
+					rootCmd := cmd(w)
+					rootCmd.SetArgs(sess.Command())
+					rootCmd.SetIn(sess)
+					rootCmd.SetOut(sess)
+					rootCmd.SetErr(sess.Stderr())
+					rootCmd.CompletionOptions.DisableDefaultCmd = true
+					if err := rootCmd.Execute(); err != nil {
+						_ = sess.Exit(1)
+						return
+					}
+
+					next(sess)
+				}
+			},
+			logging.Middleware(),
+		),
+	)
+	if err != nil {
+		log.Error("Could not start server", "error", err)
+	}
+
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	log.Info("Starting SSH server", "host", host, "port", port)
+	go func() {
+		if err = s.ListenAndServe(); err != nil && !errors.Is(err, ssh.ErrServerClosed) {
+			log.Error("Could not start server", "error", err)
+			done <- nil
+		}
+	}()
+
+	<-done
+	log.Info("Stopping SSH server")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer func() { cancel() }()
+	if err := s.Shutdown(ctx); err != nil && !errors.Is(err, ssh.ErrServerClosed) {
+		log.Error("Could not stop server", "error", err)
+	}
+}
+
+func cmd(w *colorprofile.Writer) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "sequin",
 		Short: "Human-readable ANSI sequences",
@@ -42,8 +111,7 @@ printf '\x1b[m' | sequin
 sequin <file
 	`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			w := colorprofile.NewWriter(cmd.OutOrStdout(), os.Environ())
-			in, err := io.ReadAll(cmd.InOrStdin())
+			in, err := io.ReadAll(cio.TimeoutReader(cmd.InOrStdin(), 5*time.Second))
 			if err != nil {
 				//nolint:wrapcheck
 				return err
