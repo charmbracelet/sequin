@@ -38,7 +38,7 @@ func executeCommand(ctx context.Context, args []string) ([]byte, error) {
 		errorOut.Write(out.Bytes())
 	}()
 
-	if err := cmd.Wait(); err != nil {
+	if err := xpty.WaitProcess(ctx, cmd); err != nil {
 		return errorOut.Bytes(), err //nolint: wrapcheck
 	}
 	return out.Bytes(), nil
