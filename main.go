@@ -56,8 +56,18 @@ sequin <file
 
 //nolint:mnd
 func exec(w *colorprofile.Writer, in []byte) error {
-	hasDarkBG := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
-	t := defaultTheme(hasDarkBG)
+	const envPrefix = "SEQUIN_"
+	envTheme := strings.ToLower(os.Getenv(envPrefix + "THEME"))
+
+	var t theme
+	switch envTheme {
+	case "ansi", "carlos", "secret_carlos", "matchy":
+		t = base16Theme(false)
+	default:
+		hasDarkBG := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
+		t = defaultTheme(hasDarkBG)
+	}
+
 	t.IsRaw = raw
 
 	seqPrint := func(kind string, seq []byte) {

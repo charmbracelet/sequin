@@ -19,7 +19,7 @@ type theme struct {
 	explanation lipgloss.Style
 
 	kindColors struct {
-		csi, dcs, osc, apc, esc, ctrl, text color.Color
+		apc, csi, ctrl, dcs, esc, osc, text color.Color
 	}
 }
 
@@ -31,12 +31,12 @@ func (t theme) kindStyle(kind string) lipgloss.Style {
 	}
 
 	s := map[string]lipgloss.Style{
-		"csi":  base.Foreground(t.kindColors.csi),
-		"dcs":  base.Foreground(t.kindColors.dcs),
-		"osc":  base.Foreground(t.kindColors.osc),
 		"apc":  base.Foreground(t.kindColors.apc),
-		"esc":  base.Foreground(t.kindColors.esc),
+		"csi":  base.Foreground(t.kindColors.csi),
 		"ctrl": base.Foreground(t.kindColors.ctrl),
+		"dcs":  base.Foreground(t.kindColors.dcs),
+		"esc":  base.Foreground(t.kindColors.esc),
+		"osc":  base.Foreground(t.kindColors.osc),
 		"text": base.Foreground(t.kindColors.text),
 	}[kind]
 
@@ -87,13 +87,33 @@ func defaultTheme(hasDarkBG bool) (t theme) {
 	t.explanation = lipgloss.NewStyle().
 		Foreground(lightDark("#3C343A", "#D4CAD1"))
 
-	t.kindColors.csi = lightDark("#936EE5", "#8D58FF")
-	t.kindColors.dcs = lightDark("#86C867", "#CEE88A")
-	t.kindColors.osc = lightDark("#43C7E0", "#1CD4F7")
 	t.kindColors.apc = lightDark("#F58855", "#FF8383")
-	t.kindColors.esc = lipgloss.Color("#E46FDD")
+	t.kindColors.csi = lightDark("#936EE5", "#8D58FF")
 	t.kindColors.ctrl = lightDark("#4DBA94", "#4BD2A3")
+	t.kindColors.dcs = lightDark("#86C867", "#CEE88A")
+	t.kindColors.esc = lipgloss.Color("#E46FDD")
+	t.kindColors.osc = lightDark("#43C7E0", "#1CD4F7")
 	t.kindColors.text = lightDark("#978692", "#6C6068")
+
+	return t
+}
+
+func base16Theme(_ bool) theme {
+	t := defaultTheme(false)
+
+	t.sequence = t.sequence.Foreground(lipgloss.BrightBlack)
+	t.separator = t.separator.Foreground(lipgloss.BrightBlack)
+	t.text = t.text.Foreground(lipgloss.BrightBlack)
+	t.error = t.error.Foreground(lipgloss.BrightRed)
+	t.explanation = t.explanation.Foreground(lipgloss.White)
+
+	t.kindColors.apc = lipgloss.Red
+	t.kindColors.csi = lipgloss.Blue
+	t.kindColors.ctrl = lipgloss.Green
+	t.kindColors.dcs = lipgloss.Yellow
+	t.kindColors.esc = lipgloss.Magenta
+	t.kindColors.osc = lipgloss.Cyan
+	t.kindColors.text = lipgloss.BrightBlack
 
 	return t
 }
