@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"image/color"
 	"io"
 	"os"
 	"strings"
@@ -58,53 +57,15 @@ sequin <file
 //nolint:mnd
 func exec(w *colorprofile.Writer, in []byte) error {
 	hasDarkBG := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
-	lightDark := func(light, dark string) color.Color {
-		return lipgloss.LightDark(hasDarkBG)(lipgloss.Color(light), lipgloss.Color(dark))
-	}
-
-	rawModeStyle := lipgloss.NewStyle()
-	rawKindStyle := lipgloss.NewStyle().
-		Width(4).
-		Align(lipgloss.Right).
-		Bold(true).
-		MarginRight(1)
-	seqStyle := lipgloss.NewStyle().
-		Foreground(lightDark("#917F8B", "#978692"))
-	separator := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#978692")).
-		SetString(": ")
-	textStyle := lipgloss.NewStyle().
-		Foreground(lightDark("#D9D9D9", "#D9D9D9"))
-	errStyle := lipgloss.NewStyle().
-		Foreground(lightDark("#EC6A88", "#ff5f87"))
-	explanationStyle := lipgloss.NewStyle().
-		Foreground(lightDark("#3C343A", "#D4CAD1"))
-
-	kindColors := map[string]color.Color{
-		"CSI":  lightDark("#936EE5", "#8D58FF"),
-		"DCS":  lightDark("#86C867", "#CEE88A"),
-		"OSC":  lightDark("#43C7E0", "#1CD4F7"),
-		"APC":  lightDark("#F58855", "#FF8383"),
-		"ESC":  lipgloss.Color("#E46FDD"),
-		"Ctrl": lightDark("#4DBA94", "#4BD2A3"),
-		"Text": lightDark("#978692", "#6C6068"),
-	}
-
-	kindStyle := func(kind string) lipgloss.Style {
-		if raw {
-			return rawModeStyle.Foreground(kindColors[kind])
-		}
-		return rawKindStyle.Foreground(kindColors[kind])
-	}
-
-	textKindStyle := kindStyle("Text").SetString("Text")
+	t := defaultTheme(hasDarkBG)
+	t.IsRaw = raw
 
 	seqPrint := func(kind string, seq []byte) {
 		s := fmt.Sprintf("%q", seq)
 		s = strings.TrimPrefix(s, `"`)
 		s = strings.TrimSuffix(s, `"`)
 		if raw {
-			_, _ = fmt.Fprint(w, kindStyle(kind).Render(s))
+			_, _ = fmt.Fprint(w, t.kindStyle(kind).Render(s))
 			return
 		}
 
@@ -133,14 +94,14 @@ func exec(w *colorprofile.Writer, in []byte) error {
 		_, _ = fmt.Fprintf(
 			w,
 			"%s%s%s",
-			kindStyle(kind).Render(kind),
-			seqStyle.Render(s),
-			separator,
+			t.kindStyle(kind),
+			t.sequence.Render(s),
+			t.separator,
 		)
 
 		switch kind {
 		case "Ctrl":
-			_, _ = fmt.Fprintln(w, explanationStyle.Render(ctrlCodes[seq[0]]))
+			_, _ = fmt.Fprintln(w, t.explanation.Render(ctrlCodes[seq[0]]))
 		case "":
 			_, _ = fmt.Fprintf(w, "Unknown %q\n", seq)
 		}
@@ -151,9 +112,9 @@ func exec(w *colorprofile.Writer, in []byte) error {
 			return
 		}
 		if raw {
-			_, _ = fmt.Fprint(w, kindStyle("Text").Render(buf.String()))
+			_, _ = fmt.Fprint(w, t.kindStyle("Text").Render(buf.String()))
 		} else {
-			_, _ = fmt.Fprintf(w, "%s%s\n", textKindStyle, textStyle.Render(buf.String()))
+			_, _ = fmt.Fprintf(w, "%s%s\n", t.kindStyle("text"), t.text.Render(buf.String()))
 		}
 
 		buf.Reset()
@@ -166,15 +127,15 @@ func exec(w *colorprofile.Writer, in []byte) error {
 
 		handler, ok := reg[p.Cmd]
 		if !ok {
-			_, _ = fmt.Fprintln(w, errStyle.Render(errUnhandled.Error()))
+			_, _ = fmt.Fprintln(w, t.error.Render(errUnhandled.Error()))
 			return
 		}
 		out, err := handler(p)
 		if err != nil {
-			_, _ = fmt.Fprintln(w, errStyle.Render(err.Error()))
+			_, _ = fmt.Fprintln(w, t.error.Render(err.Error()))
 			return
 		}
-		_, _ = fmt.Fprintln(w, explanationStyle.Render(out))
+		_, _ = fmt.Fprintln(w, t.explanation.Render(out))
 	}
 
 	var state byte
@@ -219,10 +180,10 @@ func exec(w *colorprofile.Writer, in []byte) error {
 				_, _ = fmt.Fprintf(
 					w,
 					"%s%s%s%s\n",
-					kindStyle("Ctrl").SetString("Ctrl"),
-					seqStyle.Render("ESC"),
-					separator,
-					explanationStyle.Render("Escape"),
+					t.kindStyle("Ctrl"),
+					t.sequence.Render("ESC"),
+					t.separator,
+					t.explanation.Render("Escape"),
 				)
 				break
 			}
@@ -237,7 +198,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 
 		case width > 0:
 			// Text
-			buf.WriteString(explanationStyle.Render(string(seq)))
+			buf.WriteString(t.explanation.Render(string(seq)))
 
 		default:
 			flushPrint()
