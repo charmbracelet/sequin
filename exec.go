@@ -6,18 +6,31 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"syscall"
 
-	"github.com/creack/pty"
+	"github.com/charmbracelet/x/term"
+	"github.com/charmbracelet/x/xpty"
 )
 
 func executeCommand(ctx context.Context, args []string) ([]byte, error) {
-	cmd := exec.CommandContext(ctx, args[0], args[1:]...) //nolint: gosec
-	pty, err := runInPty(cmd)
+	width, height, err := term.GetSize(os.Stdout.Fd())
+	if err != nil {
+		width = 80
+		height = 24
+	}
+
+	pty, err := xpty.NewPty(width, height)
 	if err != nil {
 		return nil, err
 	}
-	defer pty.Close() //nolint: errcheck
+	defer func() {
+		_ = pty.Close()
+	}()
+
+	cmd := exec.CommandContext(ctx, args[0], args[1:]...) //nolint: gosec
+	if err := pty.Start(cmd); err != nil {
+		return nil, err
+	}
+
 	var out bytes.Buffer
 	var errorOut bytes.Buffer
 	go func() {
@@ -25,20 +38,8 @@ func executeCommand(ctx context.Context, args []string) ([]byte, error) {
 		errorOut.Write(out.Bytes())
 	}()
 
-	err = cmd.Wait()
-	if err != nil {
+	if err := cmd.Wait(); err != nil {
 		return errorOut.Bytes(), err //nolint: wrapcheck
 	}
 	return out.Bytes(), nil
-}
-
-// runInPty opens a new pty and runs the given command in it.
-// The returned file is the pty's file descriptor and must be closed by the
-// caller.
-func runInPty(c *exec.Cmd) (*os.File, error) {
-	//nolint: wrapcheck
-	return pty.StartWithAttrs(c, &pty.Winsize{
-		Cols: 80,
-		Rows: 10,
-	}, &syscall.SysProcAttr{})
 }

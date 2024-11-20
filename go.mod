@@ -7,14 +7,18 @@ require (
 	github.com/charmbracelet/lipgloss/v2 v2.0.0-alpha.2.0.20241119154431-6bbc36c3d376
 	github.com/charmbracelet/x/ansi v0.4.6-0.20241113152101-0af7d04e9f32
 	github.com/charmbracelet/x/exp/golden v0.0.0-20241029204245-3ef5e7b1ea37
-	github.com/creack/pty v1.1.24
+	github.com/charmbracelet/x/term v0.2.0
+	github.com/charmbracelet/x/xpty v0.1.0
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
 )
 
 require (
 	github.com/aymanbagabas/go-udiff v0.2.0 // indirect
-	github.com/charmbracelet/x/term v0.2.0 // indirect
+	github.com/charmbracelet/x/conpty v0.1.0 // indirect
+	github.com/charmbracelet/x/errors v0.0.0-20240508181413-e8d8b6e2de86 // indirect
+	github.com/charmbracelet/x/termios v0.1.0 // indirect
+	github.com/creack/pty v1.1.24 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
