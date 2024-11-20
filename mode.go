@@ -32,6 +32,8 @@ func modeDesc(mode int) string {
 		return "cursor keys"
 	case 25:
 		return "cursor visibility"
+	case 38:
+		return "tektronix mode"
 	case 1000:
 		return "show mouse"
 	case 1001:
