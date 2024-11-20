@@ -92,7 +92,7 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 		case 53:
 			str += "Overline"
 		case 55:
-			str += "No-overline"
+			str += "No overline"
 		case 58, 59:
 			str += fmt.Sprintf("Underline color: %d", readColor(&i, parser.Params))
 		case 90, 91, 92, 93, 94, 95, 96, 97:
