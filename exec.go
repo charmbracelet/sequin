@@ -11,11 +11,16 @@ import (
 	"github.com/charmbracelet/x/xpty"
 )
 
+const (
+	defaultWidth  = 80
+	defaultHeight = 24
+)
+
 func executeCommand(ctx context.Context, args []string) ([]byte, error) {
 	width, height, err := term.GetSize(os.Stdout.Fd())
 	if err != nil {
-		width = 80
-		height = 24
+		width = defaultWidth
+		height = defaultHeight
 	}
 
 	pty, err := xpty.NewPty(width, height)
