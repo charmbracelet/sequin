@@ -55,6 +55,7 @@ var oscHandlers = map[int]handlerFn{
 	0:   handleTitle,
 	1:   handleTitle,
 	2:   handleTitle,
+	7:   handleWorkingDirectoryURL,
 	8:   handleHyperlink,
 	9:   handleNotify,
 	10:  handleTerminalColor,
