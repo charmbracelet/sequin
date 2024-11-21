@@ -7,14 +7,13 @@ import (
 )
 
 //nolint:mnd
-func handleLine(parser *ansi.Parser) (string, error) {
+func handleLine(p *ansi.Parser) (string, error) {
 	var count int
-	if parser.ParamsLen > 0 {
-		count = ansi.Param(parser.Params[0]).Param()
+	if n, ok := p.Param(0, 0); ok {
+		count = n
 	}
 
-	cmd := ansi.Cmd(parser.Cmd)
-	switch cmd.Command() {
+	switch p.Cmd() {
 	case 'K':
 		switch count {
 		case 0:

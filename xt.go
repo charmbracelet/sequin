@@ -2,10 +2,10 @@ package main
 
 import "github.com/charmbracelet/x/ansi"
 
-func handleXT(parser *ansi.Parser) (string, error) {
+func handleXT(p *ansi.Parser) (string, error) {
 	var count int
-	if parser.ParamsLen > 0 {
-		count = ansi.Param(parser.Params[0]).Param()
+	if n, ok := p.Param(0, 0); ok {
+		count = n
 	}
 
 	if count != 0 {

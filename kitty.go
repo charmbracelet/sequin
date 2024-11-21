@@ -8,7 +8,7 @@ import (
 )
 
 //nolint:mnd
-func handleKitty(parser *ansi.Parser) (string, error) {
+func handleKitty(p *ansi.Parser) (string, error) {
 	flagDesc := func(flag int) string {
 		var r []string
 		if flag&1 != 0 {
@@ -42,11 +42,11 @@ func handleKitty(parser *ansi.Parser) (string, error) {
 	}
 
 	var first int
-	if parser.ParamsLen > 0 {
-		first = ansi.Param(parser.Params[0]).Param()
+	if n, ok := p.Param(0, 0); ok {
+		first = n
 	}
 
-	cmd := ansi.Cmd(parser.Cmd)
+	cmd := p.Cmd()
 	switch cmd.Marker() {
 	case '?':
 		return "Request Kitty keyboard", nil
@@ -58,9 +58,8 @@ func handleKitty(parser *ansi.Parser) (string, error) {
 	case '<':
 		return fmt.Sprintf("Pop %d Kitty keyboard flags", first), nil
 	case '=':
-		if parser.ParamsLen > 1 {
-			second := ansi.Param(parser.Params[1]).Param()
-			return fmt.Sprintf("Set %q Kitty keyboard flags to %q", flagDesc(first), modeDesc(second)), nil
+		if n, ok := p.Param(1, 0); ok {
+			return fmt.Sprintf("Set %q Kitty keyboard flags to %q", flagDesc(first), modeDesc(n)), nil
 		}
 	}
 	return "", errUnhandled

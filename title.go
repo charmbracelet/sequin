@@ -9,12 +9,12 @@ import (
 
 //nolint:mnd
 func handleTitle(p *ansi.Parser) (string, error) {
-	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
+	parts := bytes.Split(p.Data(), []byte{';'})
 	if len(parts) != 2 {
 		// Invalid, ignore
 		return "", errInvalid
 	}
-	switch p.Cmd {
+	switch p.Cmd() {
 	case 0:
 		return fmt.Sprintf("Set icon name and window title to %s", parts[1]), nil
 	case 1:

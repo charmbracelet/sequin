@@ -8,7 +8,7 @@ import (
 
 //nolint:mnd
 func handleTerminalColor(p *ansi.Parser) (string, error) {
-	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
+	parts := bytes.Split(p.Data(), []byte{';'})
 	if len(parts) != 2 {
 		// Invalid, ignore
 		return "", errInvalid
@@ -22,7 +22,7 @@ func handleTerminalColor(p *ansi.Parser) (string, error) {
 	} else {
 		buf += "Set"
 	}
-	switch p.Cmd {
+	switch p.Cmd() {
 	case 10:
 		buf += " foreground color"
 	case 11:
@@ -38,13 +38,13 @@ func handleTerminalColor(p *ansi.Parser) (string, error) {
 
 //nolint:mnd
 func handleResetTerminalColor(p *ansi.Parser) (string, error) {
-	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
+	parts := bytes.Split(p.Data(), []byte{';'})
 	if len(parts) != 1 {
 		// Invalid, ignore
 		return "", errInvalid
 	}
 	var buf string
-	switch p.Cmd {
+	switch p.Cmd() {
 	case 110:
 		buf += "Reset foreground color"
 	case 111:

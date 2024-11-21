@@ -9,7 +9,7 @@ import (
 
 //nolint:mnd
 func handleHyperlink(p *ansi.Parser) (string, error) {
-	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
+	parts := bytes.Split(p.Data(), []byte{';'})
 	if len(parts) != 3 {
 		// Invalid, ignore
 		return "", errInvalid

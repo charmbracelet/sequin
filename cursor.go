@@ -8,12 +8,12 @@ import (
 
 //nolint:mnd
 func handleCursor(p *ansi.Parser) (string, error) {
-	var count int
-	if p.ParamsLen > 0 {
-		count = ansi.Param(p.Params[0]).Param()
+	count := 1
+	if n, ok := p.Param(0, 1); ok && n > 0 {
+		count = n
 	}
 
-	cmd := ansi.Cmd(p.Cmd)
+	cmd := p.Cmd()
 	isPrivate := cmd.Marker() == '?'
 	switch cmd.Command() {
 	case 'A':
@@ -33,10 +33,12 @@ func handleCursor(p *ansi.Parser) (string, error) {
 	case 'F':
 		return fmt.Sprintf("Cursor previous line %d", default1(count)), nil
 	case 'H':
-		row := default1(count)
-		col := 1
-		if p.ParamsLen > 1 {
-			col = p.Params[1]
+		row, col := 1, 1
+		if n, ok := p.Param(0, 1); ok && n > 0 {
+			row = n
+		}
+		if n, ok := p.Param(1, 1); ok && n > 0 {
+			col = n
 		}
 		return fmt.Sprintf("Set cursor position row=%[1]d col=%[2]d", row, col), nil
 	case 'n':
@@ -52,7 +54,7 @@ func handleCursor(p *ansi.Parser) (string, error) {
 	case 'u':
 		return "Restore cursor position", nil
 	case 'q':
-		return fmt.Sprintf("Set cursor style %s", descCursorStyle(default1(count))), nil
+		return fmt.Sprintf("Set cursor style %s", descCursorStyle(count)), nil
 	}
 	return "", errUnhandled
 }

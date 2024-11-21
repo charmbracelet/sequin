@@ -7,13 +7,13 @@ import (
 )
 
 //nolint:mnd
-func handleScreen(parser *ansi.Parser) (string, error) {
+func handleScreen(p *ansi.Parser) (string, error) {
 	var count int
-	if parser.ParamsLen > 0 {
-		count = ansi.Param(parser.Params[0]).Param()
+	if n, ok := p.Param(0, 0); ok {
+		count = n
 	}
 
-	cmd := ansi.Cmd(parser.Cmd)
+	cmd := p.Cmd()
 	switch cmd.Command() {
 	case 'J':
 		switch count {
@@ -27,15 +27,17 @@ func handleScreen(parser *ansi.Parser) (string, error) {
 			return "Erase entire display", nil
 		}
 	case 'r':
-		top := count
-		bottom := 0
-		if parser.ParamsLen > 1 {
-			bottom = ansi.Param(parser.Params[1]).Param()
+		top, bot := 1, 0
+		if n, ok := p.Param(0, 1); ok {
+			top = n
+		}
+		if n, ok := p.Param(1, 0); ok {
+			bot = n
 		}
 		return fmt.Sprintf(
 			"Set scrolling region to top=%d bottom=%d",
 			top,
-			bottom,
+			bot,
 		), nil
 	}
 
