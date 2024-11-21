@@ -8,7 +8,7 @@ require (
 	github.com/charmbracelet/x/ansi v0.5.1
 	github.com/charmbracelet/x/exp/golden v0.0.0-20241029204245-3ef5e7b1ea37
 	github.com/charmbracelet/x/term v0.2.1
-	github.com/charmbracelet/x/xpty v0.1.0
+	github.com/charmbracelet/x/xpty v0.1.1
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
 )
