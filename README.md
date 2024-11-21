@@ -137,13 +137,23 @@ So yeah, it’s great for debugging applications, and of course, learning about 
 
 Golden file for TUIs contain ANSI, which can be easily inspected with `sequin`:
 
-```console
-$ cat ./testdata/MyCuteApp.golden | sequin
+```bash
+cat ./testdata/MyCuteApp.golden | sequin
 ```
 
 <p><img src="https://github.com/user-attachments/assets/16367a79-0ee3-40e1-95ae-adc46f411192" width="580"></p>
 
 To generate golden files for your TUIs have a look at [`golden`][golden] and [`teatest`][teatest] from the [`/x`][x] project.
+
+### Fake TTY - executing commands
+
+You can also execute commands directly in sequin using a fake TTY, for instance:
+
+```bash
+sequin -- git status -sb
+```
+
+<p><img src="https://github.com/user-attachments/assets/444b8971-bd4f-41d1-abef-2c2b9f55ed88" width="450"></p>
 
 ## Pro Mode: Syntax Highlighting for Raw Sequences
 
