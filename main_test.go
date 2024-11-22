@@ -171,6 +171,7 @@ var cwd = map[string]string{
 	"single part":    ansi.NotifyWorkingDirectory("localhost", "foo"),
 	"multiple parts": ansi.NotifyWorkingDirectory("localhost", "foo", "bar"),
 	"invalid":        strings.Replace(ansi.NotifyWorkingDirectory("localhost", "foo"), ";", "", 1),
+	"invalid url":    strings.Replace(ansi.NotifyWorkingDirectory("localhost", "foo"), "file://localhost/foo", "foooooo:/bar", 1),
 }
 
 var hyperlink = map[string]string{
