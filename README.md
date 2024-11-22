@@ -66,7 +66,7 @@ Or, download it:
 - [Packages][releases] are available in Debian and RPM formats
 - [Binaries][releases] are available for Linux, macOS, Windows, FreeBSD, OpenBSD, and NetBSD
 
-[releases]: https://github.com/charmbracelet/mods/releases
+[releases]: https://github.com/charmbracelet/sequin/releases
 
 Or, just install it with `go`:
 
@@ -93,7 +93,6 @@ If you use a package (like Homebrew, Debs, etc), the completions should be set
 up automatically, given your shell is configured properly.
 
 </details>
-
 
 ## Examples
 
@@ -138,18 +137,28 @@ So yeah, it’s great for debugging applications, and of course, learning about 
 
 Golden file for TUIs contain ANSI, which can be easily inspected with `sequin`:
 
-```console
-$ cat ./testdata/MyCuteApp.golden | sequin
+```bash
+cat ./testdata/MyCuteApp.golden | sequin
 ```
 
 <p><img src="https://github.com/user-attachments/assets/16367a79-0ee3-40e1-95ae-adc46f411192" width="580"></p>
 
 To generate golden files for your TUIs have a look at [`golden`][golden] and [`teatest`][teatest] from the [`/x`][x] project.
 
+### Fake TTY - executing commands
+
+You can also execute commands directly in sequin:
+
+```bash
+sequin -- ls -1 go.*
+```
+
+<p><img src="https://github.com/user-attachments/assets/efd9f511-130d-49e8-ba8f-31e1e3d86920" width="450"></p>
+
 ## Pro Mode: Syntax Highlighting for Raw Sequences
 
 One of the pain points that we find when reading raw ANSI output is
-that it’s hard to visually separate sequences from reguar text. For situations
+that it’s hard to visually separate sequences from regular text. For situations
 like this you can use the `--raw`/`-r` flag to simply highlight sequences inline:
 
 ```bash
@@ -173,8 +182,8 @@ what the sequences are and what they’re doing.
 ## Is it done?
 
 No! Common sequences are implemented, but there is still plenty of work to
-do. For instance, APC sequences are not supported yet. If you notice one 
-of such missing sequences, or want to work on any other area of the project, 
+do. For instance, APC sequences are not supported yet. If you notice one
+of such missing sequences, or want to work on any other area of the project,
 feel free to open a PR. 💘
 
 ## Contributing

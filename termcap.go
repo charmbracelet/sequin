@@ -10,11 +10,15 @@ import (
 )
 
 func handleTermcap(p *ansi.Parser) (string, error) {
-	if p.ParamsLen != 0 || p.DataLen == 0 {
+	data := p.Data()
+	if len(data) == 0 {
 		return "", errInvalid
 	}
 
-	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
+	parts := bytes.Split(data, []byte{';'})
+	if len(parts) == 0 {
+		return "", errInvalid
+	}
 
 	caps := make([]string, 0, len(parts))
 	for _, part := range parts {

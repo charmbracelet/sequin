@@ -64,7 +64,7 @@ func (t theme) kindStyle(kind string) lipgloss.Style {
 	}
 }
 
-func defaultTheme(hasDarkBG bool) (t theme) {
+func charmTheme(hasDarkBG bool) (t theme) {
 	lightDark := func(light, dark string) color.Color {
 		return lipgloss.LightDark(hasDarkBG)(lipgloss.Color(light), lipgloss.Color(dark))
 	}
@@ -99,7 +99,7 @@ func defaultTheme(hasDarkBG bool) (t theme) {
 }
 
 func base16Theme(_ bool) theme {
-	t := defaultTheme(false)
+	t := charmTheme(false)
 
 	t.sequence = t.sequence.Foreground(lipgloss.BrightBlack)
 	t.separator = t.separator.Foreground(lipgloss.BrightBlack)

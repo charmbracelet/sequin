@@ -35,19 +35,26 @@ func cmd() *cobra.Command {
 	root := &cobra.Command{
 		Use:   "sequin",
 		Short: "Human-readable ANSI sequences",
-		Args:  cobra.NoArgs,
+		Args:  cobra.ArbitraryArgs,
 		Example: `
 printf '\x1b[m' | sequin
 sequin <file
+sequin -- some command to execute
 	`,
-		RunE: func(cmd *cobra.Command, _ []string) error {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			w := colorprofile.NewWriter(cmd.OutOrStdout(), os.Environ())
-			in, err := io.ReadAll(cmd.InOrStdin())
+			var in []byte
+			var err error
+			if len(args) == 0 {
+				in, err = io.ReadAll(cmd.InOrStdin())
+			} else {
+				in, err = executeCommand(cmd.Context(), args)
+			}
 			if err != nil {
 				//nolint:wrapcheck
 				return err
 			}
-			return exec(w, in)
+			return process(w, in)
 		},
 	}
 	root.Flags().BoolVarP(&raw, "raw", "r", false, "raw mode (no explanation)")
@@ -55,17 +62,14 @@ sequin <file
 }
 
 //nolint:mnd
-func exec(w *colorprofile.Writer, in []byte) error {
-	const envPrefix = "SEQUIN_"
-	envTheme := strings.ToLower(os.Getenv(envPrefix + "THEME"))
-
+func process(w *colorprofile.Writer, in []byte) error {
 	var t theme
-	switch envTheme {
-	case "ansi", "carlos", "secret_carlos", "matchy":
-		t = base16Theme(false)
-	default:
+	switch strings.ToLower(os.Getenv("SEQUIN_THEME")) {
+	case "charm":
 		hasDarkBG := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
-		t = defaultTheme(hasDarkBG)
+		t = charmTheme(hasDarkBG)
+	default:
+		t = base16Theme(false)
 	}
 
 	t.IsRaw = raw
@@ -135,7 +139,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 			return
 		}
 
-		handler, ok := reg[p.Cmd]
+		handler, ok := reg[int(p.Cmd())]
 		if !ok {
 			_, _ = fmt.Fprintln(w, t.error.Render(errUnhandled.Error()))
 			return
@@ -176,7 +180,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 			seqPrint("APC", seq)
 
 			switch {
-			case ansi.HasPrefix(p.Data, []byte("G")):
+			case ansi.HasPrefix(p.Data(), []byte("G")):
 				// TODO: Kitty graphics
 			}
 

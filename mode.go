@@ -6,9 +6,13 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleMode(parser *ansi.Parser) (string, error) {
-	mode := modeDesc(ansi.Param(parser.Params[0]).Param())
-	cmd := ansi.Cmd(parser.Cmd)
+func handleMode(p *ansi.Parser) (string, error) {
+	var m int
+	if n, ok := p.Param(0, 0); ok {
+		m = n
+	}
+	mode := modeDesc(m)
+	cmd := p.Cmd()
 	private := ""
 	if cmd.Marker() == '?' {
 		private = "private "
