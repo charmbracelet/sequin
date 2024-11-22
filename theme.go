@@ -64,6 +64,7 @@ func (t theme) kindStyle(kind string) lipgloss.Style {
 	}
 }
 
+//nolint:mnd
 func charmTheme(hasDarkBG bool) (t theme) {
 	lightDark := func(light, dark string) color.Color {
 		return lipgloss.LightDark(hasDarkBG)(lipgloss.Color(light), lipgloss.Color(dark))

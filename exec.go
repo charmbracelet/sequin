@@ -16,6 +16,7 @@ const (
 	defaultHeight = 24
 )
 
+//nolint:wrapcheck
 func executeCommand(ctx context.Context, args []string) ([]byte, error) {
 	width, height, err := term.GetSize(os.Stdout.Fd())
 	if err != nil {

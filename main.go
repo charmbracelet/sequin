@@ -51,7 +51,6 @@ sequin -- some command to execute
 				in, err = executeCommand(cmd.Context(), args)
 			}
 			if err != nil {
-				//nolint:wrapcheck
 				return err
 			}
 			return process(w, in)
@@ -61,7 +60,6 @@ sequin -- some command to execute
 	return root
 }
 
-//nolint:mnd
 func process(w *colorprofile.Writer, in []byte) error {
 	var t theme
 	switch strings.ToLower(os.Getenv("SEQUIN_THEME")) {
