@@ -2,11 +2,4 @@
 version: 2
 includes:
   - from_url:
-      url: charmbracelet/meta/main/goreleaser-simple.yaml
-variables:
-  main: "."
-  description: "Human-readable ANSI sequences."
-  github_url: "https://github.com/charmbracelet/sequin"
-  maintainer: "Carlos A Becker <carlos@charm.sh>"
-  brew_commit_author_name: "Carlos A Becker"
-  brew_commit_author_email: "carlos@charm.sh"
+      url: charmbracelet/meta/main/goreleaser-sequin.yaml

@@ -12,6 +12,8 @@ import (
 	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/ansi/parser"
+	mcobra "github.com/muesli/mango-cobra"
+	"github.com/muesli/roff"
 	"github.com/spf13/cobra"
 )
 
@@ -23,6 +25,9 @@ const (
 var (
 	buf bytes.Buffer
 	raw bool
+
+	// Version as provided by goreleaser.
+	Version = ""
 )
 
 func main() {
@@ -52,6 +57,30 @@ sequin <file
 		},
 	}
 	root.Flags().BoolVarP(&raw, "raw", "r", false, "raw mode (no explanation)")
+
+	root.InitDefaultCompletionCmd()
+	root.AddCommand(&cobra.Command{
+		Use:                   "man",
+		Short:                 "Generates manpages",
+		SilenceUsage:          true,
+		DisableFlagsInUseLine: true,
+		Hidden:                true,
+		Args:                  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			manPage, err := mcobra.NewManPage(1, root.Root())
+			if err != nil {
+				return err
+			}
+
+			_, err = fmt.Fprint(os.Stdout, manPage.Build(roff.NewDocument()))
+			return err
+		},
+	})
+
+	if Version == "" {
+		Version = "unknown (built from source)"
+	}
+	root.Version = Version
 	return root
 }
 
