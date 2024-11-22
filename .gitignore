@@ -1,3 +1,5 @@
 dist
 sequin
 *.gif
+completions/
+manpages/
