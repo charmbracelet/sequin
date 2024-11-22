@@ -167,6 +167,13 @@ var title = map[string]string{
 	"invalid cmd": strings.Replace(ansi.SetWindowTitle("hello"), "2", "5", 1),
 }
 
+var cwd = map[string]string{
+	"single part":    ansi.NotifyWorkingDirectory("localhost", "foo"),
+	"multiple parts": ansi.NotifyWorkingDirectory("localhost", "foo", "bar"),
+	"invalid":        strings.Replace(ansi.NotifyWorkingDirectory("localhost", "foo"), ";", "", 1),
+	"invalid url":    strings.Replace(ansi.NotifyWorkingDirectory("localhost", "foo"), "file://localhost/foo", "foooooo:/bar", 1),
+}
+
 var hyperlink = map[string]string{
 	"uri only":        ansi.SetHyperlink("https://charm.sh"),
 	"full":            ansi.SetHyperlink("https://charm.sh", "my title"),
@@ -212,6 +219,7 @@ func TestSequences(t *testing.T) {
 		"kitty":     kitty,
 		"sgr":       sgr,
 		"title":     title,
+		"cwd":       cwd,
 		"hyperlink": hyperlink,
 		"notify":    notify,
 		"termcolor": termcolor,

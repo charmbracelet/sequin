@@ -4,8 +4,8 @@ github.com/charmbracelet/colorprofile v0.1.8 h1:PywDeXsiAzlPtkiiKgMEVLvb6nlEuKrM
 github.com/charmbracelet/colorprofile v0.1.8/go.mod h1:+jpmObxZl1Dab3H3IMVIPSZTsKcFpjJUv97G0dLqM60=
 github.com/charmbracelet/lipgloss/v2 v2.0.0-alpha.2.0.20241121164047-8448a9be4804 h1:7CYjb9YMZA4kMhLgGdtlXvq+nu1oyENpMyMQlTvqSFw=
 github.com/charmbracelet/lipgloss/v2 v2.0.0-alpha.2.0.20241121164047-8448a9be4804/go.mod h1:F/6E/LGdH3eHCJf2rG8/O3CjlW8cZFL5YJCknJs1GkI=
-github.com/charmbracelet/x/ansi v0.5.1 h1:+mg6abP9skvsu/JQZrIJ9Z/4O1YDnLVkpfutar3dUnc=
-github.com/charmbracelet/x/ansi v0.5.1/go.mod h1:KBUFw1la39nl0dLl10l5ORDAqGXaeurTQmwyyVKse/Q=
+github.com/charmbracelet/x/ansi v0.5.2 h1:dEa1x2qdOZXD/6439s+wF7xjV+kZLu/iN00GuXXrU9E=
+github.com/charmbracelet/x/ansi v0.5.2/go.mod h1:KBUFw1la39nl0dLl10l5ORDAqGXaeurTQmwyyVKse/Q=
 github.com/charmbracelet/x/conpty v0.1.0 h1:4zc8KaIcbiL4mghEON8D72agYtSeIgq8FSThSPQIb+U=
 github.com/charmbracelet/x/conpty v0.1.0/go.mod h1:rMFsDJoDwVmiYM10aD4bH2XiRgwI7NYJtQgl5yskjEQ=
 github.com/charmbracelet/x/errors v0.0.0-20240508181413-e8d8b6e2de86 h1:JSt3B+U9iqk37QUU2Rvb6DSBYRLtWqFqfxf8l5hOZUA=
