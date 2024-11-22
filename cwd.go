@@ -10,7 +10,7 @@ import (
 
 //nolint:mnd
 func handleWorkingDirectoryURL(p *ansi.Parser) (string, error) {
-	parts := bytes.Split(p.Data[:p.DataLen], []byte{';'})
+	parts := bytes.Split(p.Data(), []byte{';'})
 	if len(parts) != 2 {
 		// Invalid, ignore
 		return "", errInvalid
