@@ -192,7 +192,7 @@ func process(w *colorprofile.Writer, in []byte) error {
 		case ansi.HasEscPrefix(seq):
 			flushPrint()
 
-			if len(seq) == 1 {
+			if len(seq) == 1 && !raw {
 				// just an ESC
 				_, _ = fmt.Fprintf(
 					w,
