@@ -19,7 +19,7 @@ type theme struct {
 	explanation lipgloss.Style
 
 	kindColors struct {
-		apc, csi, ctrl, dcs, esc, osc, text color.Color
+		apc, csi, ctrl, dcs, esc, osc, pm, sos, text color.Color
 	}
 }
 
@@ -37,6 +37,8 @@ func (t theme) kindStyle(kind string) lipgloss.Style {
 		"dcs":  base.Foreground(t.kindColors.dcs),
 		"esc":  base.Foreground(t.kindColors.esc),
 		"osc":  base.Foreground(t.kindColors.osc),
+		"pm":   base.Foreground(t.kindColors.pm),
+		"sos":  base.Foreground(t.kindColors.sos),
 		"text": base.Foreground(t.kindColors.text),
 	}[kind]
 
@@ -53,6 +55,10 @@ func (t theme) kindStyle(kind string) lipgloss.Style {
 		return s.SetString("OSC")
 	case "apc":
 		return s.SetString("APC")
+	case "pm":
+		return s.SetString("PM")
+	case "sos":
+		return s.SetString("SOS")
 	case "esc":
 		return s.SetString("ESC")
 	case "ctrl":
@@ -94,6 +100,8 @@ func charmTheme(hasDarkBG bool) (t theme) {
 	t.kindColors.dcs = lightDark("#86C867", "#CEE88A")
 	t.kindColors.esc = lipgloss.Color("#E46FDD")
 	t.kindColors.osc = lightDark("#43C7E0", "#1CD4F7")
+	t.kindColors.pm = lightDark("#FF8383", "#DC7272")
+	t.kindColors.sos = lightDark("#978692", "#6C6068")
 	t.kindColors.text = lightDark("#978692", "#6C6068")
 
 	return t
@@ -114,6 +122,8 @@ func base16Theme(_ bool) theme {
 	t.kindColors.dcs = lipgloss.Yellow
 	t.kindColors.esc = lipgloss.Magenta
 	t.kindColors.osc = lipgloss.Cyan
+	t.kindColors.pm = lipgloss.BrightRed
+	t.kindColors.sos = lipgloss.BrightBlack
 	t.kindColors.text = lipgloss.BrightBlack
 
 	return t

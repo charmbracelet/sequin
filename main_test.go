@@ -138,6 +138,8 @@ var others = map[string]string{
 	"esc":                          fmt.Sprintf("%c", ansi.ESC),
 	"file sep":                     fmt.Sprintf("%c", ansi.FS),
 	"apc":                          "\x1b_Hello World\x1b\\",
+	"pm":                           "\x1b^Hello World\x1b\\",
+	"sos":                          "\x1bXHello World\x1b\\",
 }
 
 var sgr = map[string]string{
