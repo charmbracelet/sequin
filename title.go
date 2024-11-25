@@ -16,11 +16,11 @@ func handleTitle(p *ansi.Parser) (string, error) {
 	}
 	switch p.Cmd() {
 	case 0:
-		return fmt.Sprintf("Set icon name and window title to %s", parts[1]), nil
+		return fmt.Sprintf("Set icon name and window title to %q", parts[1]), nil
 	case 1:
-		return fmt.Sprintf("Set icon name to %s", parts[1]), nil
+		return fmt.Sprintf("Set icon name to %q", parts[1]), nil
 	case 2:
-		return fmt.Sprintf("Set window title to %s", parts[1]), nil
+		return fmt.Sprintf("Set window title to %q", parts[1]), nil
 	}
 	return "", errUnhandled
 }
