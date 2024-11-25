@@ -10,7 +10,7 @@ require (
 	github.com/charmbracelet/x/term v0.2.1
 	github.com/charmbracelet/x/xpty v0.1.1
 	github.com/spf13/cobra v1.8.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 )
 
 require (
