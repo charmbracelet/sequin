@@ -186,6 +186,43 @@ do. For instance, APC sequences are not supported yet. If you notice one
 of such missing sequences, or want to work on any other area of the project,
 feel free to open a PR. 💘
 
+## FAQ
+
+<details>
+<summary>
+Why isn't sequin using my terminal's background color? (with multiplexer)
+</summary>
+related: <a href="https://github.com/charmbracelet/sequin/issues/28" target="_blank">https://github.com/charmbracelet/sequin/issues/28</a>
+<h2>Check your multiplexer's version:</h2>
+<h3>Tmux</h3>
+<p>This could be a few things depending on your environment. First thing to
+consider: are you using a terminal multiplexer (e.g. tmux)? If so, check your
+tmux version is 3.4 or higher. (Tmux added support for OSC10/11 queries in 3.4 see
+<a href="https://github.com/tmux/tmux/blob/master/CHANGES#L152" target="_blank">https://github.com/tmux/tmux/blob/master/CHANGES#L152)</a>
+`tmux -V`</p>
+
+<h3>GNU Screen</h3>
+<p>If you're a GNU screen user, check that your version is 4.99.0 or higher to
+ensure OSC10/11 can be used. Not sure which version of screen you're using?
+<code>screen --version</code></p>
+
+<h2>Make sure your multiplexer config has your default terminal and COLORTERM set.</h2>
+<h3>`tmux.conf`</h3>
+```bash
+set -g default-terminal "xterm-ghostty"
+setenv -g COLORTERM "truecolor"
+```
+
+<h3>`~/.screenrc`</h3>
+```bash
+term xterm-256color
+setenv COLORTERM truecolor
+defbce on
+```
+<p>if you don't set `defbce on`, you will get a different background color on cells
+cleared with an erase/insert/scroll/clear operation in the regular background
+color.</p>
+
 ## Contributing
 
 We love contributions. We recommend checking out [our contribution
