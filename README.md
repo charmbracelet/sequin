@@ -198,7 +198,7 @@ related: <a href="https://github.com/charmbracelet/sequin/issues/28" target="_bl
 <p>This could be a few things depending on your environment. First thing to
 consider: are you using a terminal multiplexer (e.g. tmux)? If so, check your
 tmux version is 3.4 or higher. (Tmux added support for OSC10/11 queries in 3.4 see
-<a href="https://github.com/tmux/tmux/blob/master/CHANGES#L152" target="_blank">https://github.com/tmux/tmux/blob/master/CHANGES#L152)</a> Not sure which version of tmux you're using? <code>tmux -V</code></p>
+<a href="https://github.com/tmux/tmux/blob/master/CHANGES#L152" target="_blank">https://github.com/tmux/tmux/blob/master/CHANGES#L152)</a>. Not sure which version of tmux you're using? <code>tmux -V</code></p>
 
 <h3>GNU Screen</h3>
 <p>If you're a GNU screen user, check that your version is 4.99.0 or higher to
