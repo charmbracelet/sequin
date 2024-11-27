@@ -219,7 +219,7 @@ setenv COLORTERM truecolor
 defbce on
 </pre>
 
-<p>Note: if you don't set `defbce on`, you will get a different background color on cells
+<p>Note: if you don't set <code>defbce on<code>, you will get a different background color on cells
 cleared with an erase/insert/scroll/clear operation in the regular background
 color.</p>
 
