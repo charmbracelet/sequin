@@ -91,6 +91,10 @@ func handleSgr(p *ansi.Parser) (string, error) { //nolint:unparam
 			str += fmt.Sprintf("Background color: %d", readColor(&i, params))
 		case 49:
 			str += "Default background color"
+		case 53:
+			str += "Overline"
+		case 55:
+			str += "No overline"
 		case 58, 59:
 			str += fmt.Sprintf("Underline color: %d", readColor(&i, params))
 		case 90, 91, 92, 93, 94, 95, 96, 97:
