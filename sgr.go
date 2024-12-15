@@ -65,7 +65,7 @@ func handleSgr(p *ansi.Parser) (string, error) { //nolint:unparam
 		case 9:
 			str += "Crossed-out"
 		case 21:
-			str += "No bold"
+			str += "Double underline"
 		case 22:
 			str += "Normal intensity"
 		case 23:

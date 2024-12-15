@@ -180,7 +180,7 @@ var sgr = map[string]string{
 	"style 4":                      new(ansi.Style).BackgroundColor(ansi.BrightYellow).ForegroundColor(ansi.Black).UnderlineColor(ansi.BrightCyan).String(),
 	"style 5":                      new(ansi.Style).BackgroundColor(ansi.TrueColor(0xffeeaa)).ForegroundColor(ansi.TrueColor(0xffeeaa)).UnderlineColor(ansi.TrueColor(0xffeeaa)).String(),
 	"style 6":                      new(ansi.Style).BackgroundColor(ansi.ExtendedColor(255)).ForegroundColor(ansi.ExtendedColor(255)).UnderlineColor(ansi.ExtendedColor(255)).String(),
-	"style 7":                      new(ansi.Style).NoUnderline().NoBold().NoItalic().NormalIntensity().NoBlink().NoConceal().NoReverse().NoStrikethrough().String(),
+	"style 7":                      new(ansi.Style).NoUnderline().EcmaDoubleUnderline().NoItalic().NormalIntensity().NoBlink().NoConceal().NoReverse().NoStrikethrough().String(),
 	"style 8":                      new(ansi.Style).UnderlineStyle(ansi.NoUnderlineStyle).DefaultBackgroundColor().String(),
 	"style 9":                      strings.Replace(new(ansi.Style).UnderlineStyle(ansi.SingleUnderlineStyle).DefaultForegroundColor().String(), "[4", "[4:1", 1),
 	"style 10":                     new(ansi.Style).UnderlineStyle(ansi.DoubleUnderlineStyle).String(),
