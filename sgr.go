@@ -166,16 +166,31 @@ func readColor(idxp *int, params []ansi.Parameter) (c ansi.Color) {
 		if i > paramsLen-4 {
 			return
 		}
-		for i < paramsLen-4 && params[i+2].Param(0) == 0 {
-			i++
+
+		inc := 4
+		if i < paramsLen-5 && param.HasMore() &&
+			params[i+2].HasMore() &&
+			params[i+3].HasMore() &&
+			params[i+4].HasMore() {
+			// ignore colorspace id i.e. params[i+2]
+			// see ITU T.416 for more info
+			c = color.RGBA{
+				R: uint8(params[i+3].Param(0)), //nolint:gosec
+				G: uint8(params[i+4].Param(0)), //nolint:gosec
+				B: uint8(params[i+5].Param(0)), //nolint:gosec
+				A: 0xff,
+			}
+			inc = 5
+		} else {
+			c = color.RGBA{
+				R: uint8(params[i+2].Param(0)), //nolint:gosec
+				G: uint8(params[i+3].Param(0)), //nolint:gosec
+				B: uint8(params[i+4].Param(0)), //nolint:gosec
+				A: 0xff,
+			}
 		}
-		c = color.RGBA{
-			R: uint8(params[i+2].Param(0)), //nolint:gosec
-			G: uint8(params[i+3].Param(0)), //nolint:gosec
-			B: uint8(params[i+4].Param(0)), //nolint:gosec
-			A: 0xff,
-		}
-		*idxp += 4
+
+		*idxp += inc
 	case 5: // ANSI256: Palette of 256 colors
 		if i > paramsLen-2 {
 			return
