@@ -88,7 +88,7 @@ var (
 
 type handlerFn = func(*ansi.Parser) (string, error)
 
-func printf(format string, v ...any) handlerFn {
+func printf(format string, v ...any) handlerFn { //nolint:unparam
 	return func(*ansi.Parser) (string, error) {
 		return fmt.Sprintf(format, v...), nil
 	}
