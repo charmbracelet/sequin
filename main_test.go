@@ -14,30 +14,30 @@ import (
 
 var c0c1 = map[string]string{
 	// c0
-	"c0":  fmt.Sprintf("%s", func() string {
+	"c0": func() string {
 		var c0codes string
 		for controlCode := 0x00; controlCode <= 0x1f; controlCode++ {
 			c0codes = fmt.Sprintf("%s%c", c0codes, controlCode)
 		}
 		return c0codes
-	}()),
+	}(),
 	// c1
-	"c1":  fmt.Sprintf("%s", func() string {
-			var controlCode byte
-			c1codes := []byte("")
-			for controlCode = 0x80; controlCode <= 0x9f; controlCode++ {
-				// Skip DCS, SOS, CSI, OSC, PM, and APC
-				switch controlCode {
-				case ansi.DCS, ansi.SOS, ansi.CSI, ansi.OSC, ansi.PM, ansi.APC:
-					continue
-				}
-				c1codes = append(c1codes, controlCode)
+	"c1": func() string {
+		var controlCode byte
+		c1codes := []byte("")
+		for controlCode = 0x80; controlCode <= 0x9f; controlCode++ {
+			// Skip DCS, SOS, CSI, OSC, PM, and APC
+			switch controlCode {
+			case ansi.DCS, ansi.SOS, ansi.CSI, ansi.OSC, ansi.PM, ansi.APC:
+				continue
 			}
-			return string(c1codes[:])
-		}()),
+			c1codes = append(c1codes, controlCode)
+		}
+		return string(c1codes[:])
+	}(),
 }
 
-var ascii =  map[string]string{
+var ascii = map[string]string{
 	// space and del
 	"ascii": fmt.Sprintf(" %c", ansi.DEL),
 }
@@ -189,6 +189,7 @@ var sgr = map[string]string{
 	"style 13":                     new(ansi.Style).UnderlineStyle(ansi.DashedUnderlineStyle).Conceal().String(),
 	"empty values":                 strings.Replace(new(ansi.Style).Bold().String(), "[", "[;;;", 1),
 	"underlined text, but no bold": new(ansi.Style).UnderlineStyle(ansi.CurlyUnderlineStyle).Bold().String(),
+	"mittchels tweet":              "\033[;4:3;38;2;175;175;215;58:2::190:80:70m",
 }
 
 var title = map[string]string{

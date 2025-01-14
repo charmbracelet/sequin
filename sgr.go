@@ -166,6 +166,9 @@ func readColor(idxp *int, params []ansi.Parameter) (c ansi.Color) {
 		if i > paramsLen-4 {
 			return
 		}
+		for i < paramsLen-4 && params[i+2].Param(0) == 0 {
+			i++
+		}
 		c = color.RGBA{
 			R: uint8(params[i+2].Param(0)), //nolint:gosec
 			G: uint8(params[i+3].Param(0)), //nolint:gosec
