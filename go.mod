@@ -3,7 +3,7 @@ module github.com/charmbracelet/sequin
 go 1.22.8
 
 require (
-	github.com/charmbracelet/colorprofile v0.2.1
+	github.com/charmbracelet/colorprofile v0.2.2
 	github.com/charmbracelet/lipgloss/v2 v2.0.0-alpha.2.0.20250127175135-cf3915a699b4
 	github.com/charmbracelet/x/ansi v0.8.0
 	github.com/charmbracelet/x/exp/golden v0.0.0-20241029204245-3ef5e7b1ea37
