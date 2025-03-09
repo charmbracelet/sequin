@@ -8,7 +8,7 @@ import (
 )
 
 //nolint:mnd
-func handleKitty(p *ansi.Parser) (string, error) {
+func handleKitty(p *ansi.Parser) (seqInfo, error) {
 	flagDesc := func(flag int) string {
 		var r []string
 		if flag&1 != 0 {
@@ -49,18 +49,18 @@ func handleKitty(p *ansi.Parser) (string, error) {
 	cmd := ansi.Cmd(p.Command())
 	switch cmd.Prefix() {
 	case '?':
-		return "Request Kitty keyboard", nil
+		return seqNoMnemonic("Request Kitty keyboard"), nil
 	case '>':
 		if first == 0 {
-			return "Disable Kitty keyboard", nil
+			return seqNoMnemonic("Disable Kitty keyboard"), nil
 		}
-		return fmt.Sprintf("Push %q Kitty keyboard flag", flagDesc(first)), nil
+		return seqNoMnemonic(fmt.Sprintf("Push %q Kitty keyboard flag", flagDesc(first))), nil
 	case '<':
-		return fmt.Sprintf("Pop %d Kitty keyboard flags", first), nil
+		return seqNoMnemonic(fmt.Sprintf("Pop %d Kitty keyboard flags", first)), nil
 	case '=':
 		if n, ok := p.Param(1, 0); ok {
-			return fmt.Sprintf("Set %q Kitty keyboard flags to %q", flagDesc(first), modeDesc(n)), nil
+			return seqNoMnemonic(fmt.Sprintf("Set %q Kitty keyboard flags to %q", flagDesc(first), modeDesc(n))), nil
 		}
 	}
-	return "", errUnhandled
+	return seqNoMnemonic(""), errUnhandled
 }

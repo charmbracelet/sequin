@@ -7,11 +7,11 @@ import (
 )
 
 //nolint:mnd
-func handleTerminalColor(p *ansi.Parser) (string, error) {
+func handleTerminalColor(p *ansi.Parser) (seqInfo, error) {
 	parts := bytes.Split(p.Data(), []byte{';'})
 	if len(parts) != 2 {
 		// Invalid, ignore
-		return "", errInvalid
+		return seqNoMnemonic(""), errInvalid
 	}
 
 	arg := string(parts[1])
@@ -33,15 +33,15 @@ func handleTerminalColor(p *ansi.Parser) (string, error) {
 	if arg == "?" {
 		buf += " to " + arg
 	}
-	return buf, nil
+	return seqNoMnemonic(buf), nil
 }
 
 //nolint:mnd
-func handleResetTerminalColor(p *ansi.Parser) (string, error) {
+func handleResetTerminalColor(p *ansi.Parser) (seqInfo, error) {
 	parts := bytes.Split(p.Data(), []byte{';'})
 	if len(parts) != 1 {
 		// Invalid, ignore
-		return "", errInvalid
+		return seqNoMnemonic(""), errInvalid
 	}
 	var buf string
 	switch p.Command() {
@@ -52,5 +52,5 @@ func handleResetTerminalColor(p *ansi.Parser) (string, error) {
 	case 112:
 		buf += "Reset cursor color"
 	}
-	return buf, nil
+	return seqNoMnemonic(buf), nil
 }

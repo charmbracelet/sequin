@@ -23,6 +23,7 @@ const (
 var (
 	buf bytes.Buffer
 	raw bool
+	shouldPrintMnemonics bool
 	// Version as provided by goreleaser.
 	Version = ""
 )
@@ -59,6 +60,17 @@ sequin -- some command to execute
 		},
 	}
 	root.Flags().BoolVarP(&raw, "raw", "r", false, "raw mode (no explanation)")
+	root.Flags().BoolVarP(
+		&shouldPrintMnemonics,
+		"mnemonics", "m",
+		false,
+		`print mnemonics for escape sequence types (ignored in raw mode)`,
+	)
+
+	// make sure to disable any additional info if we enter the raw mode
+	if raw {
+		shouldPrintMnemonics = false
+	}
 
 	root.Version = cmp.Or(Version, "unknown (built from source)")
 	return root
@@ -125,12 +137,19 @@ func process(w *colorprofile.Writer, in []byte) error {
 
 		switch kind {
 		case "Ctrl":
+			additionalInfo := ""
+
+			if shouldPrintMnemonics {
+				additionalInfo = t.mnemonic.Render("<"+ctrlCodes[seq[0]].mnemonic+"> ")
+			}
+
 			_, _ = fmt.Fprintf(
 				w,
-				"%s%s%s\n",
+				"%s%s%s%s\n",
 				t.sequence.Render(s),
 				t.separator,
-				t.explanation.Render(ctrlCodes[seq[0]]),
+				additionalInfo,
+				t.explanation.Render(ctrlCodes[seq[0]].explanation),
 			)
 
 		case "PM":
@@ -198,7 +217,15 @@ func process(w *colorprofile.Writer, in []byte) error {
 			_, _ = fmt.Fprintln(w, t.error.Render(err.Error()))
 			return
 		}
-		_, _ = fmt.Fprintln(w, t.explanation.Render(out))
+		if out.mnemonic != "" && shouldPrintMnemonics {
+			_, _ = fmt.Fprintln(
+				w,
+				t.mnemonic.Render("<" + out.mnemonic + ">"),
+				t.explanation.Render(out.explanation),
+			)
+			return
+		}
+		_, _ = fmt.Fprintln(w, t.explanation.Render(out.explanation))
 	}
 
 	var state byte
@@ -284,76 +311,76 @@ func process(w *colorprofile.Writer, in []byte) error {
 	return nil
 }
 
-var ctrlCodes = map[byte]string{
+var ctrlCodes = map[byte]seqInfo{
 	// C0
-	0:  "Null",
-	1:  "Start of heading",
-	2:  "Start of text",
-	3:  "End of text",
-	4:  "End of transmission",
-	5:  "Enquiry",
-	6:  "Acknowledge",
-	7:  "Bell",
-	8:  "Backspace",
-	9:  "Horizontal tab",
-	10: "Line feed",
-	11: "Vertical tab",
-	12: "Form feed",
-	13: "Carriage return",
-	14: "Shift out",
-	15: "Shift in",
-	16: "Data link escape",
-	17: "Device control 1",
-	18: "Device control 2",
-	19: "Device control 3",
-	20: "Device control 4",
-	21: "Negative acknowledge",
-	22: "Synchronous idle",
-	23: "End of transmission block",
-	24: "Cancel",
-	25: "End of medium",
-	26: "Substitute",
-	27: "Escape",
-	28: "File separator",
-	29: "Group separator",
-	30: "Record separator",
-	31: "Unit separator",
+	0:  seqInfo{"NUL", "Null"},
+	1:  seqInfo{"SOH", "Start of heading"},
+	2:  seqInfo{"STX", "Start of text"},
+	3:  seqInfo{"ETX", "End of text"},
+	4:  seqInfo{"EOT", "End of transmission"},
+	5:  seqInfo{"ENQ", "Enquiry"},
+	6:  seqInfo{"ACK", "Acknowledge"},
+	7:  seqInfo{"BEL", "Bell"},
+	8:  seqInfo{"BS", "Backspace"},
+	9:  seqInfo{"HT", "Horizontal tab"},
+	10: seqInfo{"LF", "Line feed"},
+	11: seqInfo{"VT", "Vertical tab"},
+	12: seqInfo{"FF", "Form feed"},
+	13: seqInfo{"CR", "Carriage return"},
+	14: seqInfo{"SO", "Shift out"},
+	15: seqInfo{"SI", "Shift in"},
+	16: seqInfo{"DLE", "Data link escape"},
+	17: seqInfo{"DC1", "Device control 1"},
+	18: seqInfo{"DC2", "Device control 2"},
+	19: seqInfo{"DC3", "Device control 3"},
+	20: seqInfo{"DC4", "Device control 4"},
+	21: seqInfo{"NAK", "Negative acknowledge"},
+	22: seqInfo{"SYN", "Synchronous idle"},
+	23: seqInfo{"ETB", "End of transmission block"},
+	24: seqInfo{"CAN", "Cancel"},
+	25: seqInfo{"EM", "End of medium"},
+	26: seqInfo{"SUB", "Substitute"},
+	27: seqInfo{"ESC", "Escape"},
+	28: seqInfo{"FS", "File separator"},
+	29: seqInfo{"GS", "Group separator"},
+	30: seqInfo{"RS", "Record separator"},
+	31: seqInfo{"US", "Unit separator"},
 
 	// RFC 20, section 4.1 "Control Characters" includes DEL with the note:
 	// "In the strict sense, DEL is not a control character."
-	127: "Delete",
+	127: seqInfo{"DEL", "Delete"},
 
 	// C1
-	0x80: "Padding character",
-	0x81: "High octet preset",
-	0x82: "Break permitted here",
-	0x83: "No break here",
-	0x84: "Index",
-	0x85: "Next line",
-	0x86: "Start of selected area",
-	0x87: "End of selected area",
-	0x88: "Character tabulation set",
-	0x89: "Character tabulation with justification",
-	0x8a: "Line tabulation set",
-	0x8b: "Partial line forward",
-	0x8c: "Partial line backward",
-	0x8d: "Reverse line feed",
-	0x8e: "Single shift 2",
-	0x8f: "Single shift 3",
-	0x90: "Device control string",
-	0x91: "Private use 1",
-	0x92: "Private use 2",
-	0x93: "Set transmit state",
-	0x94: "Cancel character",
-	0x95: "Message waiting",
-	0x96: "Start of guarded area",
-	0x97: "End of guarded area",
-	0x98: "Start of string",
-	0x99: "Single graphic character introducer",
-	0x9a: "Single character introducer",
-	0x9b: "Control sequence introducer",
-	0x9c: "String terminator",
-	0x9d: "Operating system command",
-	0x9e: "Privacy message",
-	0x9f: "Application program command",
+	0x80: seqInfo{"PAD", "Padding character"},
+	0x81: seqInfo{"HOP", "High octet preset"},
+	0x82: seqInfo{"BPH", "Break permitted here"},
+	0x83: seqInfo{"NBH", "No break here"},
+	0x84: seqInfo{"IND", "Index"},
+	0x85: seqInfo{"NEL", "Next line"},
+	0x86: seqInfo{"SSA", "Start of selected area"},
+	0x87: seqInfo{"ESA", "End of selected area"},
+	0x88: seqInfo{"HTS", "Character tabulation set"},
+	0x89: seqInfo{"HTJ", "Character tabulation with justification"},
+	0x8a: seqInfo{"VTS", "Line tabulation set"},
+	0x8b: seqInfo{"PLD", "Partial line forward"},
+	0x8c: seqInfo{"PLU", "Partial line backward"},
+	0x8d: seqInfo{"RI", "Reverse line feed"},
+	0x8e: seqInfo{"SS2", "Single shift 2"},
+	0x8f: seqInfo{"SS3", "Single shift 3"},
+	0x90: seqInfo{"DCS", "Device control string"},
+	0x91: seqInfo{"PU1", "Private use 1"},
+	0x92: seqInfo{"PU2", "Private use 2"},
+	0x93: seqInfo{"STS", "Set transmit state"},
+	0x94: seqInfo{"CCH", "Cancel character"},
+	0x95: seqInfo{"MW", "Message waiting"},
+	0x96: seqInfo{"SPA", "Start of guarded area"},
+	0x97: seqInfo{"EPA", "End of guarded area"},
+	0x98: seqInfo{"SOS", "Start of string"},
+	0x99: seqInfo{"SGCI", "Single graphic character introducer"},
+	0x9a: seqInfo{"SCI", "Single character introducer"},
+	0x9b: seqInfo{"CSI", "Control sequence introducer"},
+	0x9c: seqInfo{"ST", "String terminator"},
+	0x9d: seqInfo{"OSC", "Operating system command"},
+	0x9e: seqInfo{"PM", "Privacy message"},
+	0x9f: seqInfo{"APC", "Application program command"},
 }

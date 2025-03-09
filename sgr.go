@@ -9,10 +9,11 @@ import (
 )
 
 //nolint:mnd
-func handleSgr(p *ansi.Parser) (string, error) { //nolint:unparam
+func handleSgr(p *ansi.Parser) (seqInfo, error) { //nolint:unparam
 	params := p.Params()
+	mnemonic := "SGR"
 	if len(params) == 0 {
-		return "Reset style", nil
+		return seqInfo{mnemonic, "Reset style"}, nil
 	}
 
 	var str string
@@ -106,7 +107,7 @@ func handleSgr(p *ansi.Parser) (string, error) { //nolint:unparam
 		}
 	}
 
-	return str, nil
+	return seqInfo{mnemonic, str}, nil
 }
 
 var basicColors = map[int]string{

@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleMode(p *ansi.Parser) (string, error) {
+func handleMode(p *ansi.Parser) (seqInfo, error) {
 	var m int
 	if n, ok := p.Param(0, 0); ok {
 		m = n
@@ -20,13 +20,34 @@ func handleMode(p *ansi.Parser) (string, error) {
 	switch cmd.Final() {
 	case 'p':
 		// DECRQM - Request Mode
-		return fmt.Sprintf("Request %smode %q", private, mode), nil
+		return seqInfo{
+			"DECRQM",
+			fmt.Sprintf("Request %smode %q", private, mode),
+		}, nil
 	case 'h':
-		return fmt.Sprintf("Enable %smode %q", private, mode), nil
+		var mnemonic string
+		if cmd.Prefix() == '?' {
+			mnemonic = "DECSET"
+		} else {
+			mnemonic = "SM"
+		}
+		return seqInfo{
+			mnemonic,
+			fmt.Sprintf("Enable %smode %q", private, mode),
+		}, nil
 	case 'l':
-		return fmt.Sprintf("Disable %smode %q", private, mode), nil
+		var mnemonic string
+		if cmd.Prefix() == '?' {
+			mnemonic = "DECRST"
+		} else {
+			mnemonic = "RM"
+		}
+		return seqInfo{
+			mnemonic,
+			fmt.Sprintf("Disable %smode %q", private, mode),
+		}, nil
 	}
-	return "", errUnhandled
+	return seqNoMnemonic(""), errUnhandled
 }
 
 //nolint:mnd

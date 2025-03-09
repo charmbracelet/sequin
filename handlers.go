@@ -2,14 +2,13 @@ package main
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/charmbracelet/x/ansi"
 )
 
 var csiHandlers = map[int]handlerFn{
 	'm': handleSgr,
-	'c': printf("Request primary device attributes"),
+	'c': printWithMnemonic("DA1", "Request primary device attributes"),
 
 	// kitty
 	'u' | '?'<<markerShift: handleKitty,
@@ -73,12 +72,12 @@ var dcsHandlers = map[int]handlerFn{
 }
 
 var escHandler = map[int]handlerFn{
-	'7': printf("Save cursor"),
-	'8': printf("Restore cursor"),
+	'7': printWithMnemonic("DECSC", "Save cursor"),
+	'8': printWithMnemonic("DECRC", "Restore cursor"),
 
 	// C0/7-bit ASCII variant of ST.
 	// C1/8-bit extended ASCII variant handled as Ctrl.
-	'\\': printf("String terminator"),
+	'\\': printWithMnemonic("ST", "String terminator"),
 }
 
 var (
@@ -86,11 +85,20 @@ var (
 	errInvalid   = errors.New("invalid sequence")
 )
 
-type handlerFn = func(*ansi.Parser) (string, error)
+type seqInfo struct {
+	mnemonic string
+	explanation string
+}
 
-func printf(format string, v ...any) handlerFn { //nolint:unparam
-	return func(*ansi.Parser) (string, error) {
-		return fmt.Sprintf(format, v...), nil
+func seqNoMnemonic(explanation string) seqInfo {
+	return seqInfo{"", explanation}
+}
+
+type handlerFn = func(*ansi.Parser) (seqInfo, error)
+
+func printWithMnemonic(mnemonic string, explanation string) handlerFn { //nolint:unparam
+	return func(*ansi.Parser) (seqInfo, error) {
+		return seqInfo{mnemonic, explanation}, nil
 	}
 }
 
