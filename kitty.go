@@ -37,7 +37,7 @@ func handleKitty(p *ansi.Parser) (string, error) {
 		case 3:
 			return "Unset given flags and keep existing flags unchanged"
 		default:
-			return "Unknown mode"
+			return unknown + " mode"
 		}
 	}
 

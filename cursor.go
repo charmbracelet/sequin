@@ -75,6 +75,6 @@ func descCursorStyle(i int) string {
 	case 6:
 		return "Steady bar"
 	default:
-		return "Unknown"
+		return unknown
 	}
 }

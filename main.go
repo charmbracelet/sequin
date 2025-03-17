@@ -18,6 +18,7 @@ import (
 const (
 	markerShift   = parser.PrefixShift
 	intermedShift = parser.IntermedShift
+	unknown       = "Unknown"
 )
 
 var (
@@ -238,7 +239,8 @@ func process(w *colorprofile.Writer, in []byte) error {
 
 			switch {
 			case ansi.HasPrefix(p.Data(), []byte("G")):
-				// TODO: Kitty graphics
+				//nolint: godox
+				// TODO: Kitty graphics.
 			}
 
 			_, _ = fmt.Fprintln(w)

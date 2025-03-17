@@ -59,6 +59,6 @@ func modeDesc(mode int) string {
 	case 9001:
 		return "win32 input"
 	default:
-		return "unknown"
+		return unknown
 	}
 }

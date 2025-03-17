@@ -24,6 +24,7 @@ func handleSgr(p *ansi.Parser) (string, error) { //nolint:unparam
 		}
 		comma = true
 
+		//nolint: godox
 		// TODO: add more parameters and options
 		switch param.Param(0) {
 		case 0:
@@ -102,7 +103,7 @@ func handleSgr(p *ansi.Parser) (string, error) { //nolint:unparam
 		case 100, 101, 102, 103, 104, 105, 106, 107:
 			str += fmt.Sprintf("ANSI background color: Bright %s", basicColors[param.Param(0)-100])
 		default:
-			str += "Unknown"
+			str += unknown
 		}
 	}
 
@@ -139,7 +140,7 @@ func getColorLabel(c ansi.Color) string {
 	case ansi.TrueColor, color.Color:
 		return hexString
 	default:
-		return "Unknown color"
+		return unknown + " color"
 	}
 }
 
@@ -152,7 +153,7 @@ func getColorType(c ansi.Color) string {
 	case ansi.TrueColor, color.Color:
 		return "24-bit RGB"
 	default:
-		return "Unknown"
+		return unknown
 	}
 }
 
