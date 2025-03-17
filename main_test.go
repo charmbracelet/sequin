@@ -243,6 +243,14 @@ var clipboard = map[string]string{
 	"invalid":         strings.Replace(ansi.SetPrimaryClipboard("hello"), "=", "", 1),
 }
 
+var finalterm = map[string]string{
+	"prompt start":     ansi.FinalTermPrompt(),
+	"command start":    ansi.FinalTermCmdStart(),
+	"command executed": ansi.FinalTermCmdExecuted(),
+	"command finished": ansi.FinalTermCmdFinished(),
+	"command finished exit code": ansi.FinalTermCmdFinished("0"),
+}
+
 func TestSequences(t *testing.T) {
 	for name, table := range map[string]map[string]string{
 		"c0c1":      c0c1,
@@ -260,6 +268,7 @@ func TestSequences(t *testing.T) {
 		"termcolor": termcolor,
 		"clipboard": clipboard,
 		"others":    others,
+		"finalterm": finalterm,
 	} {
 		t.Run(name, func(t *testing.T) {
 			for name, input := range table {

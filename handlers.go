@@ -66,6 +66,7 @@ var oscHandlers = map[int]handlerFn{
 	110: handleResetTerminalColor,
 	111: handleResetTerminalColor,
 	112: handleResetTerminalColor,
+	133: handleFinalTerm,
 }
 
 var dcsHandlers = map[int]handlerFn{

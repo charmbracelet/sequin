@@ -1,0 +1,34 @@
+// https://github.com/gnachman/iterm2-website/blob/master/source/_includes/3.4/documentation-escape-codes.md#shell-integrationfinalterm
+package main
+
+import (
+	"bytes"
+
+	"github.com/charmbracelet/x/ansi"
+)
+
+//nolint:mnd
+func handleFinalTerm(p *ansi.Parser) (string, error) {
+	parts := bytes.Split(p.Data(), []byte{';'})
+
+	if len(parts) < 2 {
+		return "", errInvalid
+	}
+
+	if len(parts[1]) < 1 {
+		return "", errInvalid
+	}
+
+	var buf string
+	switch parts[1][0] {
+	case 65:
+		buf += "Prompt start"
+	case 66:
+		buf += "Command start"
+	case 67:
+		buf += "Command executed"
+	case 68:
+		buf += "Command finished"
+	}
+	return buf, nil
+}
