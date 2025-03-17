@@ -7,7 +7,7 @@ import (
 )
 
 //nolint:mnd
-func handleScreen(p *ansi.Parser) (string, error) {
+func handleScreen(p *ansi.Parser) (seqInfo, error) {
 	var count int
 	if n, ok := p.Param(0, 0); ok {
 		count = n
@@ -16,15 +16,16 @@ func handleScreen(p *ansi.Parser) (string, error) {
 	cmd := ansi.Cmd(p.Command())
 	switch cmd.Final() {
 	case 'J':
+		mnemonic := "ED"
 		switch count {
 		case 0:
-			return "Erase screen bellow", nil
+			return seqInfo{mnemonic, "Erase screen bellow"}, nil
 		case 1:
-			return "Erase screen above", nil
+			return seqInfo{mnemonic, "Erase screen above"}, nil
 		case 2:
-			return "Erase entire screen", nil
+			return seqInfo{mnemonic, "Erase entire screen"}, nil
 		case 3:
-			return "Erase entire display", nil
+			return seqInfo{mnemonic, "Erase entire display"}, nil
 		}
 	case 'r':
 		top, bot := 1, 0
@@ -34,12 +35,12 @@ func handleScreen(p *ansi.Parser) (string, error) {
 		if n, ok := p.Param(1, 0); ok {
 			bot = n
 		}
-		return fmt.Sprintf(
+		return seqInfo{"DECSTBM", fmt.Sprintf(
 			"Set scrolling region to top=%d bottom=%d",
 			top,
 			bot,
-		), nil
+		)}, nil
 	}
 
-	return "", errUnhandled
+	return seqNoMnemonic(""), errUnhandled
 }

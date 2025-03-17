@@ -8,11 +8,11 @@ import (
 )
 
 //nolint:mnd
-func handleHyperlink(p *ansi.Parser) (string, error) {
+func handleHyperlink(p *ansi.Parser) (seqInfo, error) {
 	parts := bytes.Split(p.Data(), []byte{';'})
 	if len(parts) != 3 {
 		// Invalid, ignore
-		return "", errInvalid
+		return seqNoMnemonic(""), errInvalid
 	}
 
 	opts := bytes.Split(parts[1], []byte{':'})
@@ -25,5 +25,5 @@ func handleHyperlink(p *ansi.Parser) (string, error) {
 	}
 
 	buf += fmt.Sprintf(" to %q", parts[2])
-	return buf, nil
+	return seqNoMnemonic(buf), nil
 }

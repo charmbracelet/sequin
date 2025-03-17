@@ -7,7 +7,7 @@ import (
 )
 
 //nolint:mnd
-func handleCursor(p *ansi.Parser) (string, error) {
+func handleCursor(p *ansi.Parser) (seqInfo, error) {
 	count := 1
 	if n, ok := p.Param(0, 1); ok && n > 0 {
 		count = n
@@ -18,20 +18,38 @@ func handleCursor(p *ansi.Parser) (string, error) {
 	switch cmd.Final() {
 	case 'A':
 		// CUU - Cursor Up
-		return fmt.Sprintf("Cursor up %d", default1(count)), nil
+		return seqInfo{
+			"CUU",
+			fmt.Sprintf("Cursor up %d", default1(count)),
+		}, nil
 	case 'B':
 		// CUD - Cursor Down
-		return fmt.Sprintf("Cursor down %d", default1(count)), nil
+		return seqInfo{
+			"CUD",
+			fmt.Sprintf("Cursor down %d", default1(count)),
+		}, nil
 	case 'C':
 		// CUF - Cursor Forward
-		return fmt.Sprintf("Cursor right %d", default1(count)), nil
+		return seqInfo{
+			"CUF",
+			fmt.Sprintf("Cursor right %d", default1(count)),
+		}, nil
 	case 'D':
 		// CUB - Cursor Back
-		return fmt.Sprintf("Cursor left %d", default1(count)), nil
+		return seqInfo{
+			"CUB",
+			fmt.Sprintf("Cursor left %d", default1(count)),
+		}, nil
 	case 'E':
-		return fmt.Sprintf("Cursor next line %d", default1(count)), nil
+		return seqInfo{
+			"CNL",
+			fmt.Sprintf("Cursor next line %d", default1(count)),
+		}, nil
 	case 'F':
-		return fmt.Sprintf("Cursor previous line %d", default1(count)), nil
+		return seqInfo{
+			"CPL",
+			fmt.Sprintf("Cursor previous line %d", default1(count)),
+		}, nil
 	case 'H':
 		row, col := 1, 1
 		if n, ok := p.Param(0, 1); ok && n > 0 {
@@ -40,23 +58,32 @@ func handleCursor(p *ansi.Parser) (string, error) {
 		if n, ok := p.Param(1, 1); ok && n > 0 {
 			col = n
 		}
-		return fmt.Sprintf("Set cursor position row=%[1]d col=%[2]d", row, col), nil
+		return seqInfo{
+			"CUP",
+			fmt.Sprintf("Set cursor position row=%[1]d col=%[2]d", row, col),
+		}, nil
 	case 'n':
 		if count != 6 {
-			return "", errInvalid
+			return seqNoMnemonic(""), errInvalid
 		}
 		if isPrivate {
-			return "Request extended cursor position", nil
+			return seqInfo{
+				"DECXCPR",
+				"Request extended cursor position",
+			}, nil
 		}
-		return "Request cursor position", nil
+		return seqInfo{"CPR", "Request cursor position"}, nil
 	case 's':
-		return "Save cursor position", nil
+		return seqInfo{"SCOSC", "Save cursor position"}, nil
 	case 'u':
-		return "Restore cursor position", nil
+		return seqInfo{"SCORC", "Restore cursor position"}, nil
 	case 'q':
-		return fmt.Sprintf("Set cursor style %s", descCursorStyle(count)), nil
+		return seqInfo{
+			"DECSCUSR",
+			fmt.Sprintf("Set cursor style %s", descCursorStyle(count)),
+		}, nil
 	}
-	return "", errUnhandled
+	return seqNoMnemonic(""), errUnhandled
 }
 
 //nolint:mnd

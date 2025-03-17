@@ -1,0 +1,5 @@
+ SOS : Control string "flag feature test"
+ CSI 0m: <SGR> Reset style
+Text Mnemonics
+Ctrl \n: <LF> Line feed
+ CSI K: <EL> Erase line right

@@ -8,12 +8,12 @@ import (
 )
 
 //nolint:mnd
-func handleNotify(p *ansi.Parser) (string, error) {
+func handleNotify(p *ansi.Parser) (seqInfo, error) {
 	parts := bytes.Split(p.Data(), []byte{';'})
 	if len(parts) != 2 {
 		// Invalid, ignore
-		return "", errInvalid
+		return seqNoMnemonic(""), errInvalid
 	}
 
-	return fmt.Sprintf("Notify %q", parts[1]), nil
+	return seqNoMnemonic(fmt.Sprintf("Notify %q", parts[1])), nil
 }

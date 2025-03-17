@@ -17,6 +17,7 @@ type theme struct {
 	text        lipgloss.Style
 	error       lipgloss.Style
 	explanation lipgloss.Style
+	mnemonic    lipgloss.Style
 
 	kindColors struct {
 		apc, csi, ctrl, dcs, esc, osc, pm, sos, text color.Color
@@ -93,6 +94,7 @@ func charmTheme(hasDarkBG bool) (t theme) {
 		Foreground(lightDark("#EC6A88", "#ff5f87"))
 	t.explanation = lipgloss.NewStyle().
 		Foreground(lightDark("#3C343A", "#D4CAD1"))
+	t.mnemonic = t.explanation.Bold(true)
 
 	t.kindColors.apc = lightDark("#F58855", "#FF8383")
 	t.kindColors.csi = lightDark("#936EE5", "#8D58FF")
@@ -115,6 +117,7 @@ func base16Theme(_ bool) theme {
 	t.text = t.text.Foreground(lipgloss.BrightBlack)
 	t.error = t.error.Foreground(lipgloss.BrightRed)
 	t.explanation = t.explanation.Foreground(lipgloss.White)
+	t.mnemonic = t.explanation.Bold(true)
 
 	t.kindColors.apc = lipgloss.Red
 	t.kindColors.csi = lipgloss.Blue

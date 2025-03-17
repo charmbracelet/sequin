@@ -243,6 +243,21 @@ var clipboard = map[string]string{
 	"invalid":         strings.Replace(ansi.SetPrimaryClipboard("hello"), "=", "", 1),
 }
 
+var sequinFlags = map[string]string{
+	"raw":       fmt.Sprintf("%s%s%s%s",
+			"\x1bXflag feature test\x1b\\",
+			strings.Replace(ansi.ResetStyle, "m", "0m", 1),
+			"Raw mode\n",
+			ansi.EraseLineRight,
+		),
+	"mnemonics": fmt.Sprintf("%s%s%s%s",
+			"\x1bXflag feature test\x1b\\",
+			strings.Replace(ansi.ResetStyle, "m", "0m", 1),
+			"Mnemonics\n",
+			ansi.EraseLineRight,
+		),
+}
+
 func TestSequences(t *testing.T) {
 	for name, table := range map[string]map[string]string{
 		"c0c1":      c0c1,
@@ -270,6 +285,25 @@ func TestSequences(t *testing.T) {
 					cmd.SetErr(&b)
 					cmd.SetIn(strings.NewReader(input))
 					cmd.SetArgs([]string{})
+					require.NoError(t, cmd.Execute())
+					golden.RequireEqual(t, b.Bytes())
+				})
+			}
+		})
+	}
+
+	for name, table := range map[string]map[string]string{
+		"sequinflags": sequinFlags,
+	} {
+		t.Run(name, func(t *testing.T) {
+			for name, input := range table {
+				t.Run(name, func(t *testing.T) {
+					var b bytes.Buffer
+					cmd := cmd()
+					cmd.SetOut(&b)
+					cmd.SetErr(&b)
+					cmd.SetIn(strings.NewReader(input))
+					cmd.SetArgs([]string{fmt.Sprintf("--%s", name) })
 					require.NoError(t, cmd.Execute())
 					golden.RequireEqual(t, b.Bytes())
 				})
