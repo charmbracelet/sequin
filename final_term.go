@@ -3,6 +3,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/charmbracelet/x/ansi"
 )
@@ -15,7 +16,7 @@ func handleFinalTerm(p *ansi.Parser) (string, error) {
 		return "", errInvalid
 	}
 
-	if len(parts[1]) < 1 {
+	if len(parts[1]) != 1 {
 		return "", errInvalid
 	}
 
@@ -23,12 +24,21 @@ func handleFinalTerm(p *ansi.Parser) (string, error) {
 	switch parts[1][0] {
 	case 65:
 		buf += "Prompt start"
+		break
 	case 66:
 		buf += "Command start"
+		break
 	case 67:
 		buf += "Command executed"
+		break
 	case 68:
 		buf += "Command finished"
+		if len(parts) > 2 && len(parts[2]) > 1 {
+			buf += fmt.Sprintf(", exit code: %s", string(parts[2]))
+		}
+		break
+	default:
+		return "", errInvalid
 	}
 	return buf, nil
 }

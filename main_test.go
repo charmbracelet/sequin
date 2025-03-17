@@ -244,11 +244,13 @@ var clipboard = map[string]string{
 }
 
 var finalterm = map[string]string{
-	"prompt start":     ansi.FinalTermPrompt(),
-	"command start":    ansi.FinalTermCmdStart(),
-	"command executed": ansi.FinalTermCmdExecuted(),
-	"command finished": ansi.FinalTermCmdFinished(),
-	"command finished exit code": ansi.FinalTermCmdFinished("0"),
+	"prompt start":               ansi.FinalTermPrompt(),
+	"prompt start invalid":       ansi.FinalTerm("AB"),
+	"command start":              ansi.FinalTermCmdStart(),
+	"command executed":           ansi.FinalTermCmdExecuted(),
+	"command finished":           ansi.FinalTermCmdFinished(),
+	"command finished exit code": ansi.FinalTermCmdFinished("127"),
+	"invalid":                    ansi.FinalTerm("Q"),
 }
 
 func TestSequences(t *testing.T) {
