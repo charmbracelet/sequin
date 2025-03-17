@@ -75,6 +75,8 @@ var dcsHandlers = map[int]handlerFn{
 var escHandler = map[int]handlerFn{
 	'7': printf("Save cursor"),
 	'8': printf("Restore cursor"),
+	'>': printf("Normal Keypad (DECPNM)"),
+	'=': printf("Application Keypad (DECPAM)"),
 
 	// C0/7-bit ASCII variant of ST.
 	// C1/8-bit extended ASCII variant handled as Ctrl.
