@@ -128,7 +128,7 @@ func getColorLabel(c ansi.Color) string {
 	r, g, b, _ := c.RGBA()
 	hexString := fmt.Sprintf("#%.2X%.2X%.2X", r>>8, g>>8, b>>8) //nolint:mnd
 	switch c := c.(type) {
-	case ansi.ExtendedColor:
+	case ansi.IndexedColor:
 		paletteID := int(c)
 		// First 16 colors are the same as ANSI
 		if paletteID < 8 { //nolint:mnd
@@ -137,7 +137,7 @@ func getColorLabel(c ansi.Color) string {
 			return fmt.Sprintf("%d (Bright %s)", c, strings.ToLower(basicColors[paletteID-8]))
 		}
 		return fmt.Sprintf("%d (%s)", c, hexString)
-	case ansi.TrueColor, color.Color:
+	case ansi.RGBColor, color.Color:
 		return hexString
 	default:
 		return unknown + " color"
@@ -148,9 +148,9 @@ func getColorType(c ansi.Color) string {
 	switch c.(type) {
 	case ansi.BasicColor:
 		return "ANSI"
-	case ansi.ExtendedColor:
+	case ansi.IndexedColor:
 		return "ANSI256"
-	case ansi.TrueColor, color.Color:
+	case ansi.RGBColor, color.Color:
 		return "24-bit RGB"
 	default:
 		return unknown

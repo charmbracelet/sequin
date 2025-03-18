@@ -24,19 +24,15 @@ func handleFinalTerm(p *ansi.Parser) (string, error) {
 	switch parts[1][0] {
 	case 'A':
 		buf += "Prompt start"
-		break
 	case 'B':
 		buf += "Command start"
-		break
 	case 'C':
 		buf += "Command executed"
-		break
 	case 'D':
 		buf += "Command finished"
 		if len(parts) > 2 && len(parts[2]) > 1 {
 			buf += fmt.Sprintf(", exit code: %s", string(parts[2]))
 		}
-		break
 	default:
 		return "", errInvalid
 	}
