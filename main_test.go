@@ -253,6 +253,11 @@ var finalterm = map[string]string{
 	"invalid":                    ansi.FinalTerm("Q"),
 }
 
+var keypad = map[string]string{
+	"normal keypad":      ansi.KeypadNumericMode,
+	"application keypad": ansi.KeypadApplicationMode,
+}
+
 func TestSequences(t *testing.T) {
 	for name, table := range map[string]map[string]string{
 		"c0c1":      c0c1,
@@ -271,6 +276,7 @@ func TestSequences(t *testing.T) {
 		"clipboard": clipboard,
 		"others":    others,
 		"finalterm": finalterm,
+		"keypad":    keypad,
 	} {
 		t.Run(name, func(t *testing.T) {
 			for name, input := range table {
