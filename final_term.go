@@ -31,7 +31,7 @@ func handleFinalTerm(p *ansi.Parser) (string, error) {
 	case 67:
 		buf += "Command executed"
 		break
-	case 68:
+	case 'D':
 		buf += "Command finished"
 		if len(parts) > 2 && len(parts[2]) > 1 {
 			buf += fmt.Sprintf(", exit code: %s", string(parts[2]))
