@@ -22,7 +22,7 @@ func handleFinalTerm(p *ansi.Parser) (string, error) {
 
 	var buf string
 	switch parts[1][0] {
-	case 65:
+	case 'A':
 		buf += "Prompt start"
 		break
 	case 'B':
