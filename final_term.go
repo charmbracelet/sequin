@@ -25,7 +25,7 @@ func handleFinalTerm(p *ansi.Parser) (string, error) {
 	case 65:
 		buf += "Prompt start"
 		break
-	case 66:
+	case 'B':
 		buf += "Command start"
 		break
 	case 'C':
