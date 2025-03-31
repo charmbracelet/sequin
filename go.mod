@@ -5,7 +5,7 @@ toolchain go1.24.1
 
 require (
 	github.com/charmbracelet/colorprofile v0.3.0
-	github.com/charmbracelet/lipgloss/v2 v2.0.0-alpha.2.0.20250127175135-cf3915a699b4
+	github.com/charmbracelet/lipgloss/v2 v2.0.0-beta1
 	github.com/charmbracelet/x/ansi v0.8.1-0.20250219181712-d0cc2ccd9c9c
 	github.com/charmbracelet/x/exp/golden v0.0.0-20241029204245-3ef5e7b1ea37
 	github.com/charmbracelet/x/term v0.2.1
@@ -16,6 +16,7 @@ require (
 
 require (
 	github.com/aymanbagabas/go-udiff v0.2.0 // indirect
+	github.com/charmbracelet/x/cellbuf v0.0.13 // indirect
 	github.com/charmbracelet/x/conpty v0.1.0 // indirect
 	github.com/charmbracelet/x/errors v0.0.0-20240508181413-e8d8b6e2de86 // indirect
 	github.com/charmbracelet/x/termios v0.1.1 // indirect
