@@ -25,13 +25,13 @@ Use a package manager:
 
 ```bash
 # macOS or Linux
-brew install charmbracelet/tap/sequin
+brew install sequin
 
 # Arch Linux (btw)
 yay -S sequin-bin
 
-# Nix
-nix-shell -p nur.repos.charmbracelet.sequin
+# Nix (unstable)
+nix-shell -p sequin
 ```
 
 <details>
