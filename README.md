@@ -30,6 +30,8 @@ brew install sequin
 # Arch Linux (btw)
 yay -S sequin-bin
 
+# Nix (NUR)
+nix-shell -p nur.repos.charmbracelet.sequin
 # Nix (unstable)
 nix-shell -p sequin
 ```
