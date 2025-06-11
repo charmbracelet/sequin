@@ -228,10 +228,9 @@ color.</p>
 
 ## Contributing
 
-We love contributions. We recommend checking out [our contribution
-guidelines][contributing] for faster responses on our end.
+See [contributing][contribute].
 
-[contributing]: https://github.com/charmbracelet/.github/blob/main/CONTRIBUTING.md
+[contribute]: https://github.com/charmbracelet/sequin/contribute
 
 ## Feedback
 
