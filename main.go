@@ -2,13 +2,14 @@ package main
 
 import (
 	"bytes"
-	"cmp"
+	"context"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 
 	"github.com/charmbracelet/colorprofile"
+	"github.com/charmbracelet/fang"
 	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/ansi/parser"
@@ -24,12 +25,10 @@ const (
 var (
 	buf bytes.Buffer
 	raw bool
-	// Version as provided by goreleaser.
-	Version = ""
 )
 
 func main() {
-	if err := cmd().Execute(); err != nil {
+	if err := fang.Execute(context.Background(), cmd(), fang.WithoutCompletions()); err != nil {
 		os.Exit(1)
 	}
 }
@@ -40,8 +39,13 @@ func cmd() *cobra.Command {
 		Short: "Human-readable ANSI sequences",
 		Args:  cobra.ArbitraryArgs,
 		Example: `
+# Explain sequences from STDIN:
 printf '\x1b[m' | sequin
+
+# Explain sequences from a file:
 sequin <file
+
+# Run a command and explain its output:
 sequin -- some command to execute
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -60,8 +64,6 @@ sequin -- some command to execute
 		},
 	}
 	root.Flags().BoolVarP(&raw, "raw", "r", false, "raw mode (no explanation)")
-
-	root.Version = cmp.Or(Version, "unknown (built from source)")
 	return root
 }
 
