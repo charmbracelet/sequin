@@ -221,16 +221,16 @@ var notify = map[string]string{
 }
 
 var termcolor = map[string]string{
-	"set bg":         ansi.SetBackgroundColor(ansi.Black),
-	"set fg":         ansi.SetForegroundColor(ansi.Red),
-	"set cursor":     ansi.SetCursorColor(ansi.Blue),
+	"set bg":         ansi.SetBackgroundColor("#000000"),
+	"set fg":         ansi.SetForegroundColor("#800000"),
+	"set cursor":     ansi.SetCursorColor("#000080"),
 	"request bg":     ansi.RequestBackgroundColor,
 	"request fg":     ansi.RequestForegroundColor,
 	"request cursor": ansi.RequestCursorColor,
 	"reset bg":       ansi.ResetBackgroundColor,
 	"reset fg":       ansi.ResetForegroundColor,
 	"reset cursor":   ansi.ResetCursorColor,
-	"invalid set":    strings.Replace(ansi.SetBackgroundColor(ansi.Black), ";", "", 1),
+	"invalid set":    strings.Replace(ansi.SetBackgroundColor("#000000"), ";", "", 1),
 	"invalid reset":  strings.Replace(ansi.ResetBackgroundColor, "111", "111;1", 1),
 }
 
