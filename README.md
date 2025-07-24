@@ -32,7 +32,7 @@ yay -S sequin-bin
 
 # Nix (NUR)
 nix-shell -p nur.repos.charmbracelet.sequin
-# Nix (unstable)
+# Nix
 nix-shell -p sequin
 ```
 
