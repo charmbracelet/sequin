@@ -12,6 +12,10 @@ func handleXTModKeys(p *ansi.Parser) (string, error) {
 	var value int
 	var hasValue bool
 
+	if len(p.Params()) > 2 || len(p.Params()) == 0 {
+		return "", errInvalid
+	}
+
 	// First parameter is the resource (Pp)
 	if n, ok := p.Param(0, 0); ok {
 		resource = n
