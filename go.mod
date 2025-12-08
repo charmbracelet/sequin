@@ -10,7 +10,7 @@ require (
 	github.com/charmbracelet/x/exp/golden v0.0.0-20250806222409-83e3a29d542f
 	github.com/charmbracelet/x/term v0.2.2
 	github.com/charmbracelet/x/xpty v0.1.3
-	github.com/spf13/cobra v1.10.1
+	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
 )
 
