@@ -139,6 +139,7 @@ var mode = map[string]string{
 	"request win32 input":         ansi.RequestModeWin32Input,
 	"invalid":                     strings.Replace(ansi.SetModeTextCursorEnable, "25", "27", 1),
 	"non private":                 strings.Replace(ansi.SetModeTextCursorEnable, "?", "", 1),
+	"soft terminal reset":         "\x1b[!p", // DECSTR
 }
 
 var kitty = map[string]string{
