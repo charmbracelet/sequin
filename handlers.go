@@ -49,6 +49,7 @@ var csiHandlers = map[int]handlerFn{
 	'l':                                         handleMode,
 
 	'q' | '>'<<markerShift: handleXT,
+	'm' | '>'<<markerShift: handleXTModKeys,
 }
 
 var oscHandlers = map[int]handlerFn{
