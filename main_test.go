@@ -137,6 +137,12 @@ var mode = map[string]string{
 	"enable win32 input":          ansi.SetModeWin32Input,
 	"disable win32 input":         ansi.ResetModeWin32Input,
 	"request win32 input":         ansi.RequestModeWin32Input,
+	"enable mouse urxvt":          ansi.SetModeMouseExtUrxvt,
+	"disable mouse urxvt":         ansi.ResetModeMouseExtUrxvt,
+	"request mouse urxvt":         ansi.RequestModeMouseExtUrxvt,
+	"enable mouse multi":          "\x1b[?1000;1006;1015h",
+	"disable mouse multi":         "\x1b[?1000;1006l",
+	"request mouse multi":         "\x1b[?1000;1006$p",
 	"invalid":                     strings.Replace(ansi.SetModeTextCursorEnable, "25", "27", 1),
 	"non private":                 strings.Replace(ansi.SetModeTextCursorEnable, "?", "", 1),
 }
