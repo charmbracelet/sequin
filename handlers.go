@@ -41,6 +41,7 @@ var csiHandlers = map[int]handlerFn{
 	'T': handleLine,
 
 	// modes
+	'p' | '!'<<intermedShift:                    printf("Soft Terminal Reset"),
 	'p' | '$'<<intermedShift:                    handleMode,
 	'p' | '?'<<markerShift | '$'<<intermedShift: handleMode,
 	'h' | '?'<<markerShift:                      handleMode,

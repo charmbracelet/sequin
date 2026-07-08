@@ -170,6 +170,7 @@ var others = map[string]string{
 	"apc":                          "\x1b_Hello World\x1b\\",
 	"pm":                           "\x1b^Hello World\x1b\\",
 	"sos":                          "\x1bXHello World\x1b\\",
+	"soft reset":                   "\x1b[!p",
 }
 
 var sgr = map[string]string{
