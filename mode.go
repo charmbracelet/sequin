@@ -2,31 +2,43 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/x/ansi"
 )
 
 func handleMode(p *ansi.Parser) (string, error) {
-	var m int
-	if n, ok := p.Param(0, 0); ok {
-		m = n
+	params := p.Params()
+	if len(params) == 0 {
+		return "", errInvalid
 	}
-	mode := modeDesc(m)
+
 	cmd := ansi.Cmd(p.Command())
 	private := ""
 	if cmd.Prefix() == '?' {
 		private = "private "
 	}
+
+	var action string
 	switch cmd.Final() {
 	case 'p':
 		// DECRQM - Request Mode
-		return fmt.Sprintf("Request %smode %q", private, mode), nil
+		action = "Request"
 	case 'h':
-		return fmt.Sprintf("Enable %smode %q", private, mode), nil
+		action = "Enable"
 	case 'l':
-		return fmt.Sprintf("Disable %smode %q", private, mode), nil
+		action = "Disable"
+	default:
+		return "", errUnhandled
 	}
-	return "", errUnhandled
+
+	var modes []string
+	for _, param := range params {
+		m := param.Param(0)
+		modes = append(modes, fmt.Sprintf("%q", modeDesc(m)))
+	}
+
+	return fmt.Sprintf("%s %smode %s", action, private, strings.Join(modes, ", ")), nil
 }
 
 //nolint:mnd
@@ -48,6 +60,8 @@ func modeDesc(mode int) string {
 		return "report focus"
 	case 1006:
 		return "mouse SGR ext"
+	case 1015:
+		return "mouse URXVT ext"
 	case 1049:
 		return "altscreen"
 	case 2004:

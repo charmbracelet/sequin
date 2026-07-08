@@ -139,6 +139,7 @@ var mode = map[string]string{
 	"request win32 input":         ansi.RequestModeWin32Input,
 	"invalid":                     strings.Replace(ansi.SetModeTextCursorEnable, "25", "27", 1),
 	"non private":                 strings.Replace(ansi.SetModeTextCursorEnable, "?", "", 1),
+	"enable multiple modes":       "\x1b[?1000;1006;1015h",
 }
 
 var kitty = map[string]string{
