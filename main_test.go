@@ -258,6 +258,21 @@ var keypad = map[string]string{
 	"application keypad": ansi.KeypadApplicationMode,
 }
 
+var xtmodkeys = map[string]string{
+	"enable modifyOtherKeys":    "\x1b[>4;1m",
+	"disable modifyOtherKeys":   "\x1b[>4;0m",
+	"reset modifyOtherKeys":     "\x1b[>4m",
+	"enable modifyCursorKeys":   "\x1b[>1;1m",
+	"enable modifyFunctionKeys": "\x1b[>2;1m",
+	"enable modifyKeypadKeys":   "\x1b[>3;1m",
+	"enable modifyModifierKeys": "\x1b[>6;1m",
+	"enable modifySpecialKeys":  "\x1b[>7;1m",
+	"disable modifyCursorKeys":  "\x1b[>1;0m",
+	"reset modifyFunctionKeys":  "\x1b[>2m",
+	"unknown resource enable":   "\x1b[>5;1m",
+	"unknown resource disable":  "\x1b[>9;0m",
+}
+
 func TestSequences(t *testing.T) {
 	for name, table := range map[string]map[string]string{
 		"c0c1":      c0c1,
@@ -277,6 +292,7 @@ func TestSequences(t *testing.T) {
 		"others":    others,
 		"finalterm": finalterm,
 		"keypad":    keypad,
+		"xtmodkeys": xtmodkeys,
 	} {
 		t.Run(name, func(t *testing.T) {
 			for name, input := range table {
