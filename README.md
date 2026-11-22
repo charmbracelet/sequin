@@ -76,26 +76,6 @@ Or, just install it with `go`:
 go install github.com/charmbracelet/sequin@latest
 ```
 
-<details>
-<summary>Shell Completions</summary>
-
-All the packages and archives come with pre-generated completion files for Bash,
-ZSH, Fish, and PowerShell.
-
-If you built it from source, you can generate them with:
-
-```bash
-sequin completion bash -h
-sequin completion zsh -h
-sequin completion fish -h
-sequin completion powershell -h
-```
-
-If you use a package (like Homebrew, Debs, etc), the completions should be set
-up automatically, given your shell is configured properly.
-
-</details>
-
 ## Examples
 
 ### Describing escape sequences
